@@ -1,24 +1,35 @@
+import { useState } from "react";
+import { Header } from "./components/layout/Header";
+import { Dashboard } from "./pages/Dashboard";
+import { InterviewSetup } from "./pages/InterviewSetup";
+import { StartPlaceholder } from "./pages/StartPlaceholder";
+import type { SetupConfig, View } from "./types";
+
 function App() {
+  const [view, setView] = useState<View>("dashboard");
+  const [config, setConfig] = useState<SetupConfig | null>(null);
+
+  function handleStart(next: SetupConfig) {
+    setConfig(next);
+    setView("pending");
+  }
+
   return (
-    <main
-      style={{
-        minHeight: "100vh",
-        display: "grid",
-        placeItems: "center",
-        textAlign: "center",
-        padding: "2rem",
-      }}
-    >
-      <div>
-        <p style={{ color: "#818cf8", letterSpacing: "0.15em", fontSize: "0.8rem" }}>
-          PHASE 0
-        </p>
-        <h1 style={{ fontSize: "2.5rem", margin: "0.5rem 0" }}>Interview Room</h1>
-        <p style={{ color: "#9ca3af" }}>
-          Environment is ready. The interview simulator starts here.
-        </p>
-      </div>
-    </main>
+    <div className="min-h-screen">
+      <Header view={view} onNavigate={setView} />
+      <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-10">
+        {view === "dashboard" && <Dashboard onStart={() => setView("setup")} />}
+        {view === "setup" && (
+          <InterviewSetup
+            onBack={() => setView("dashboard")}
+            onStart={handleStart}
+          />
+        )}
+        {view === "pending" && (
+          <StartPlaceholder config={config} onBack={() => setView("setup")} />
+        )}
+      </main>
+    </div>
   );
 }
 
