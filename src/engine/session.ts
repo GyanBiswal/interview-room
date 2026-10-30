@@ -12,7 +12,11 @@ export interface SessionConfig {
   mode: "voice" | "text";
 }
 
-export type SessionStatus = "in-progress" | "completed" | "ended-early";
+export type SessionStatus =
+  | "in-progress"
+  | "completed"
+  | "ended-early"
+  | "time-up";
 
 export interface AnswerRecord {
   questionId: string;
@@ -125,13 +129,14 @@ export function advance(
 
 export function endInterview(
   session: InterviewSession,
-  now: Date
+  now: Date,
+  reason: "ended-early" | "time-up" = "ended-early"
 ): InterviewSession {
   if (session.status !== "in-progress") return session;
   return {
     ...session,
     pendingFollowUpId: null,
-    status: "ended-early",
+    status: reason,
     endedAt: now.toISOString(),
   };
 }

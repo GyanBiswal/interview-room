@@ -1,4 +1,4 @@
-export type View = "dashboard" | "setup" | "pending";
+export type View = "dashboard" | "setup" | "room" | "results";
 
 export type Difficulty = "target" | "stretch";
 export type InterviewMode = "voice" | "text";
