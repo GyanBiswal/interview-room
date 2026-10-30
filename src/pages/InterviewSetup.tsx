@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { AlertCircle, ArrowLeft, Keyboard, Play, Volume2 } from "lucide-react";
 import { Button } from "../components/ui/Button";
 import { Card } from "../components/ui/Card";
 import { SegmentedControl } from "../components/ui/SegmentedControl";
-import { DURATIONS, TOPICS } from "../data/options";
+import { DURATIONS } from "../data/options";
+import { loadBank } from "../engine/loadBank";
 import type { Difficulty, InterviewMode, SetupConfig } from "../types";
 
 interface InterviewSetupProps {
@@ -19,29 +20,35 @@ function detectSpeechSupport() {
 }
 
 export function InterviewSetup({ onBack, onStart }: InterviewSetupProps) {
+  const bankResult = useMemo(() => loadBank("backend-fresher"), []);
+  const competencies = bankResult.ok ? bankResult.bank.competencies : [];
+  const bankErrors = "errors" in bankResult ? bankResult.errors : [];
+
   const [difficulty, setDifficulty] = useState<Difficulty>("target");
   const [durationMin, setDurationMin] = useState<number>(30);
-  const [topics, setTopics] = useState<string[]>(TOPICS);
+  const [focusAreas, setFocusAreas] = useState<string[]>(() =>
+    competencies.map((c) => c.id)
+  );
   const [mode, setMode] = useState<InterviewMode>("voice");
 
   const support = detectSpeechSupport();
   const voiceLimited = mode === "voice" && !support.recognition;
-  const noTopics = topics.length === 0;
+  const noAreas = focusAreas.length === 0;
 
-  function toggleTopic(topic: string) {
-    setTopics((prev) =>
-      prev.includes(topic) ? prev.filter((t) => t !== topic) : [...prev, topic]
+  function toggleArea(id: string) {
+    setFocusAreas((prev) =>
+      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
     );
   }
 
   function handleStart() {
-    if (noTopics) return;
+    if (noAreas || !bankResult.ok) return;
     onStart({
       role: "backend",
       experience: "fresher",
       difficulty,
       durationMin,
-      topics,
+      focusAreas,
       mode,
     });
   }
@@ -59,6 +66,28 @@ export function InterviewSetup({ onBack, onStart }: InterviewSetupProps) {
           Choose what to practise. You can change these every session.
         </p>
       </div>
+
+      {bankErrors.length > 0 && (
+        <div className="rounded-xl border border-red-500/30 bg-red-500/10 p-4 text-sm text-red-200">
+          <p className="flex items-center gap-2 font-medium">
+            <AlertCircle size={16} /> The question bank failed validation, so
+            interviews cannot start.
+          </p>
+          <ul className="mt-2 list-disc space-y-1 pl-5 text-xs">
+            {bankErrors.slice(0, 8).map((e, i) => (
+              <li key={i}>
+                {e.path}: {e.message}
+              </li>
+            ))}
+          </ul>
+          {bankErrors.length > 8 && (
+            <p className="mt-2 text-xs">
+              ...and {bankErrors.length - 8} more. Run npm run validate:bank
+              for the full list.
+            </p>
+          )}
+        </div>
+      )}
 
       <div className="grid gap-6 lg:grid-cols-3">
         <div className="space-y-6 lg:col-span-2">
@@ -103,16 +132,12 @@ export function InterviewSetup({ onBack, onStart }: InterviewSetupProps) {
 
           <Card>
             <h2 className="mb-3 text-sm font-medium text-white">Difficulty</h2>
-              <SegmentedControl<Difficulty>
+            <SegmentedControl<Difficulty>
               label="Difficulty"
               value={difficulty}
               onChange={setDifficulty}
               options={[
-                {
-                  value: "target",
-                  label: "Target",
-                  hint: "Around 7/10",
-                },
+                { value: "target", label: "Target", hint: "Around 7/10" },
                 {
                   value: "stretch",
                   label: "Stretch mix",
@@ -124,7 +149,7 @@ export function InterviewSetup({ onBack, onStart }: InterviewSetupProps) {
 
           <Card>
             <h2 className="mb-3 text-sm font-medium text-white">Duration</h2>
-              <SegmentedControl<number>
+            <SegmentedControl<number>
               label="Interview duration"
               value={durationMin}
               onChange={setDurationMin}
@@ -137,46 +162,55 @@ export function InterviewSetup({ onBack, onStart }: InterviewSetupProps) {
 
           <Card>
             <div className="mb-3 flex items-center justify-between">
-              <h2 className="text-sm font-medium text-white">Focus topics</h2>
+              <h2 className="text-sm font-medium text-white">Focus areas</h2>
               <div className="flex gap-1">
-                <Button variant="ghost" className="!px-2 !py-1 text-xs" onClick={() => setTopics(TOPICS)}>
+                <Button
+                  variant="ghost"
+                  className="!px-2 !py-1 text-xs"
+                  onClick={() => setFocusAreas(competencies.map((c) => c.id))}
+                >
                   Select all
                 </Button>
-                <Button variant="ghost" className="!px-2 !py-1 text-xs" onClick={() => setTopics([])}>
+                <Button
+                  variant="ghost"
+                  className="!px-2 !py-1 text-xs"
+                  onClick={() => setFocusAreas([])}
+                >
                   Clear
                 </Button>
               </div>
             </div>
             <div className="flex flex-wrap gap-2">
-              {TOPICS.map((topic) => {
-                const selected = topics.includes(topic);
+              {competencies.map((c) => {
+                const selected = focusAreas.includes(c.id);
                 return (
                   <button
-                    key={topic}
+                    key={c.id}
                     type="button"
                     aria-pressed={selected}
-                    onClick={() => toggleTopic(topic)}
-                    className={`rounded-full border px-4 py-2 text-sm transition-colors ${
+                    onClick={() => toggleArea(c.id)}
+                    className={`rounded-full border px-4 py-2 text-left text-sm transition-colors ${
                       selected
                         ? "border-accent-500 bg-accent-500/10 text-white"
                         : "border-white/10 bg-ink-800 text-zinc-400 hover:bg-ink-700"
                     }`}
                   >
-                    {topic}
+                    {c.name}
                   </button>
                 );
               })}
             </div>
-            {noTopics && (
+            {noAreas && competencies.length > 0 && (
               <p className="mt-3 flex items-center gap-1.5 text-xs text-amber-300">
-                <AlertCircle size={14} /> Select at least one topic to continue.
+                <AlertCircle size={14} /> Select at least one focus area to
+                continue.
               </p>
             )}
           </Card>
 
           <Card>
             <h2 className="mb-3 text-sm font-medium text-white">Answer mode</h2>
-              <SegmentedControl<InterviewMode>
+            <SegmentedControl<InterviewMode>
               label="Answer mode"
               value={mode}
               onChange={setMode}
@@ -212,7 +246,6 @@ export function InterviewSetup({ onBack, onStart }: InterviewSetupProps) {
           </Card>
         </div>
 
-        {/* Summary */}
         <div className="lg:col-span-1">
           <div className="lg:sticky lg:top-20">
             <Card>
@@ -237,9 +270,9 @@ export function InterviewSetup({ onBack, onStart }: InterviewSetupProps) {
                   <dd className="text-zinc-200">{durationMin} min</dd>
                 </div>
                 <div className="flex justify-between gap-4">
-                  <dt className="text-zinc-500">Topics</dt>
+                  <dt className="text-zinc-500">Focus areas</dt>
                   <dd className="text-right text-zinc-200">
-                    {topics.length} of {TOPICS.length}
+                    {focusAreas.length} of {competencies.length}
                   </dd>
                 </div>
                 <div className="flex justify-between gap-4">
@@ -252,7 +285,7 @@ export function InterviewSetup({ onBack, onStart }: InterviewSetupProps) {
               <Button
                 className="mt-6 w-full"
                 onClick={handleStart}
-                disabled={noTopics}
+                disabled={noAreas || !bankResult.ok}
                 icon={<Play size={16} />}
               >
                 Start interview

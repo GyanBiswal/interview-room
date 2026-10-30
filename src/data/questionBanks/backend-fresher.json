@@ -1,0 +1,1260 @@
+
+{
+  "metadata": {
+    "role": "backend_developer",
+    "experience_level": "fresher_0_1_year",
+    "technology_stack": [
+      "JavaScript",
+      "Node.js",
+      "Express.js",
+      "REST APIs",
+      "SQL",
+      "MongoDB"
+    ],
+    "target_difficulty": 7,
+    "stretch_difficulty": 8,
+    "language": "English",
+    "schema_version": "1.0"
+  },
+  "competencies": [
+    {
+      "id": "backend_fundamentals",
+      "name": "Backend Fundamentals and HTTP",
+      "priority": "high",
+      "reason": "Backend developers must understand client-server communication, HTTP semantics, request lifecycles, and status codes to build reliable APIs."
+    },
+    {
+      "id": "rest_api_design",
+      "name": "REST API Design and Implementation",
+      "priority": "high",
+      "reason": "API design, validation, consistent responses, and correct HTTP methods are central to building maintainable backend services."
+    },
+    {
+      "id": "nodejs_express",
+      "name": "Node.js and Express.js",
+      "priority": "high",
+      "reason": "The candidate must understand asynchronous execution, middleware, request handling, and error propagation in the primary backend stack."
+    },
+    {
+      "id": "javascript_backend",
+      "name": "JavaScript for Backend Development",
+      "priority": "high",
+      "reason": "Promises, async/await, closures, and object behavior directly affect API correctness and asynchronous application execution."
+    },
+    {
+      "id": "sql_database",
+      "name": "SQL and Relational Database Design",
+      "priority": "high",
+      "reason": "Backend engineers need to retrieve related data correctly, design relationships, use transactions, and understand indexes."
+    },
+    {
+      "id": "mongodb",
+      "name": "MongoDB and Data Modelling",
+      "priority": "high",
+      "reason": "The candidate must model document relationships appropriately and understand queries, indexing, and consistency trade-offs."
+    },
+    {
+      "id": "security",
+      "name": "Authentication, Authorization, and Security",
+      "priority": "high",
+      "reason": "Backend APIs handle sensitive data and must prevent unauthorized access, injection attacks, and unsafe input processing."
+    },
+    {
+      "id": "validation_errors_testing",
+      "name": "Validation, Error Handling, and Testing",
+      "priority": "high",
+      "reason": "Reliable backend services require predictable failures, meaningful tests, and clear separation between client and server errors."
+    },
+    {
+      "id": "coding_problem_solving",
+      "name": "Coding and Problem-Solving",
+      "priority": "high",
+      "reason": "Practical coding exercises assess the candidate's ability to implement correct and efficient logic under interview conditions."
+    },
+    {
+      "id": "backend_scenarios",
+      "name": "Practical Backend Scenarios",
+      "priority": "high",
+      "reason": "Scenario questions test whether the candidate can combine API design, database operations, security, and debugging in realistic situations."
+    }
+  ],
+  "questions": [
+    {
+      "id": "BACKEND_001",
+      "competency_id": "backend_fundamentals",
+      "subtopic": "http_methods_and_status_codes",
+      "difficulty": 6,
+      "question_type": "scenario",
+      "question": "You are implementing an API to create, retrieve, update, and delete users. Which HTTP methods and status codes would you use? Also explain the difference between PUT and PATCH.",
+      "assessment_goal": "Assess practical understanding of HTTP methods, status codes, and update semantics.",
+      "why_asked": "Backend interviewers need to know whether a candidate can design predictable HTTP APIs rather than merely write route handlers.",
+      "estimated_duration_seconds": 150,
+      "reference_answer": {
+        "summary": "Use POST to create, GET to retrieve, PUT to replace, PATCH to partially update, and DELETE to remove a resource. Select status codes according to the outcome.",
+        "detailed_explanation": "POST /users can create a user and return 201 Created, ideally with the created resource or a Location header. GET /users/123 returns 200 OK when the user exists and 404 Not Found otherwise. PUT /users/123 generally replaces the resource representation, while PATCH /users/123 changes selected fields. DELETE /users/123 can return 204 No Content when deletion succeeds without a response body. Invalid input commonly results in 400 Bad Request, unauthenticated requests in 401 Unauthorized, and authenticated requests lacking permission in 403 Forbidden. A server failure can return 500 Internal Server Error. PUT is generally idempotent when the same complete replacement is repeated; PATCH is not inherently idempotent, although particular PATCH operations can be designed to be idempotent.",
+        "key_points": [
+          "Correct mapping of HTTP methods to resource operations.",
+          "Appropriate use of 200, 201, 204, 400, 401, 403, 404, and 500.",
+          "PUT generally replaces a resource; PATCH modifies selected fields.",
+          "Idempotency means repeating an operation has the same intended effect as performing it once.",
+          "The response body should be consistent with the chosen status code."
+        ],
+        "acceptable_alternatives": [
+          "A successful DELETE may return 200 OK with a response body.",
+          "An API may return 202 Accepted for an asynchronous operation.",
+          "A PUT request may create a resource at a client-selected URI when the API supports that behavior."
+        ],
+        "common_mistakes": [
+          "Using GET to modify or delete data.",
+          "Claiming PUT and PATCH always behave identically.",
+          "Returning 201 for every successful request.",
+          "Confusing 401 authentication failure with 403 authorization failure.",
+          "Claiming that every PATCH request is non-idempotent."
+        ]
+      },
+      "evaluation": {
+        "total_points": 10,
+        "criteria": [
+          {
+            "id": "criterion_1",
+            "description": "Maps CRUD operations to appropriate HTTP methods.",
+            "points": 3,
+            "full_credit_condition": "Correctly explains POST, GET, PUT or PATCH, and DELETE in the given scenario.",
+            "partial_credit_condition": "Correctly maps most operations but confuses one method."
+          },
+          {
+            "id": "criterion_2",
+            "description": "Selects suitable HTTP status codes.",
+            "points": 3,
+            "full_credit_condition": "Correctly explains success, validation, missing-resource, authentication, and server-error responses.",
+            "partial_credit_condition": "Identifies common success and failure codes but gives incomplete explanations."
+          },
+          {
+            "id": "criterion_3",
+            "description": "Explains PUT versus PATCH and idempotency.",
+            "points": 3,
+            "full_credit_condition": "Explains replacement versus partial modification and correctly describes idempotency.",
+            "partial_credit_condition": "Understands the update distinction but not idempotency."
+          },
+          {
+            "id": "criterion_4",
+            "description": "Communicates a coherent API design.",
+            "points": 1,
+            "full_credit_condition": "Applies the methods and codes consistently to the user API.",
+            "partial_credit_condition": "Provides isolated definitions without applying them to the scenario."
+          }
+        ],
+        "critical_errors": [
+          "Claims that GET should normally be used to modify persistent application data.",
+          "Treats 401 and 403 as having exactly the same meaning."
+        ]
+      },
+      "follow_ups": [
+        {
+          "id": "BACKEND_001_F1",
+          "question": "Your client retries a POST request because the network times out after the server creates an order. How would you prevent the retry from creating a duplicate order?",
+          "competency_id": "backend_scenarios",
+          "difficulty": 8,
+          "question_type": "practical_application",
+          "assessment_goal": "Evaluate understanding of retries, idempotency, and duplicate prevention.",
+          "estimated_duration_seconds": 120,
+          "trigger_conditions": [
+            "The candidate demonstrates a correct understanding of HTTP methods and idempotency."
+          ],
+          "skip_conditions": [
+            "The candidate has already explained idempotency keys and atomic duplicate prevention.",
+            "The interview has no remaining time for a stretch question."
+          ],
+          "reference_answer": {
+            "summary": "Use an idempotency key and enforce uniqueness or atomic request processing on the server.",
+            "detailed_explanation": "The client can send a unique idempotency key with the order-creation request. The server stores the key together with the operation result and uses an appropriate unique constraint or atomic mechanism to ensure concurrent retries do not create multiple orders. Repeated requests with the same key return the existing result. Key scope, expiration, and payload consistency should be defined.",
+            "key_points": [
+              "Generate and reuse the same key for retries of the same operation.",
+              "Enforce uniqueness and handle concurrent requests safely.",
+              "Return the previous result for a repeated key.",
+              "Use database transactions or other atomic mechanisms when needed."
+            ],
+            "acceptable_alternatives": [
+              "A unique business identifier combined with a database uniqueness constraint can prevent duplicate orders."
+            ],
+            "common_mistakes": [
+              "Assuming a frontend button disable guarantees duplicate prevention.",
+              "Checking for an existing order and inserting a new one without addressing race conditions."
+            ]
+          },
+          "evaluation": {
+            "total_points": 10,
+            "criteria": [
+              {
+                "id": "followup_criterion_1",
+                "description": "Proposes a reliable deduplication strategy.",
+                "points": 4,
+                "full_credit_condition": "Explains reuse of an idempotency key or an equivalent unique business identifier.",
+                "partial_credit_condition": "Suggests checking for duplicates but does not establish reliable deduplication."
+              },
+              {
+                "id": "followup_criterion_2",
+                "description": "Addresses concurrency and persistence.",
+                "points": 4,
+                "full_credit_condition": "Explains database uniqueness, atomicity, or transactions to prevent simultaneous duplicates.",
+                "partial_credit_condition": "Mentions storing a key but does not explain concurrent requests."
+              },
+              {
+                "id": "followup_criterion_3",
+                "description": "Explains retry behavior.",
+                "points": 2,
+                "full_credit_condition": "Explains how a repeated request returns the existing result.",
+                "partial_credit_condition": "Recognizes retries but does not describe the response."
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "BACKEND_002",
+      "competency_id": "rest_api_design",
+      "subtopic": "api_contract_and_validation",
+      "difficulty": 7,
+      "question_type": "scenario",
+      "question": "You need to build POST /api/orders. The request contains userId, productId, and quantity. Explain how you would design the endpoint, validate the request, structure the response, and handle cases where the user or product does not exist.",
+      "assessment_goal": "Assess the ability to design a complete API contract with input validation and predictable error handling.",
+      "why_asked": "A fresher should be able to turn a simple business requirement into a reliable endpoint that can be integrated with a frontend.",
+      "estimated_duration_seconds": 180,
+      "reference_answer": {
+        "summary": "Validate the request shape and field values, verify resource existence and permissions, perform the business operation safely, and return a consistent response with an appropriate status code.",
+        "detailed_explanation": "The endpoint can accept a JSON body containing userId, productId, and quantity. Validate that required fields exist, identifiers have the expected format, and quantity is a positive integer within business limits. Reject malformed JSON or invalid fields with a suitable 400 or 422 response according to the API convention. Verify that the user and product exist and that the caller is authorized to place the order. A missing user or product can return 404, while a business-rule conflict may return 409. On successful creation, return 201 Created and an order identifier or the created resource. Use consistent error objects, such as code, message, and optional field details. Do not trust client-supplied prices; obtain authoritative pricing from the backend. Ensure the database operation preserves relevant consistency constraints.",
+        "key_points": [
+          "Define request and response schemas.",
+          "Validate required fields, types, ranges, and identifier formats.",
+          "Distinguish malformed input, missing resources, authorization failures, and business conflicts.",
+          "Return 201 Created for successful order creation.",
+          "Use server-side prices and enforce business rules on the backend.",
+          "Avoid exposing stack traces or internal database errors."
+        ],
+        "acceptable_alternatives": [
+          "Use 422 Unprocessable Content for semantically invalid input when that is the established API convention.",
+          "Use a validation library or custom validation middleware.",
+          "Use a standardized error format such as Problem Details or a project-specific error envelope."
+        ],
+        "common_mistakes": [
+          "Checking only whether request fields exist without validating their types or values.",
+          "Trusting a price supplied by the client.",
+          "Returning 200 for every outcome.",
+          "Treating validation errors and internal server failures as identical.",
+          "Performing database writes before validating the request."
+        ]
+      },
+      "evaluation": {
+        "total_points": 10,
+        "criteria": [
+          {
+            "id": "criterion_1",
+            "description": "Defines and validates the request contract.",
+            "points": 3,
+            "full_credit_condition": "Identifies required fields, types, positive quantity, and appropriate validation.",
+            "partial_credit_condition": "Checks required fields but misses type or business validation."
+          },
+          {
+            "id": "criterion_2",
+            "description": "Handles resource existence and business rules.",
+            "points": 2,
+            "full_credit_condition": "Checks user and product existence, authorization, and relevant business constraints.",
+            "partial_credit_condition": "Checks existence but overlooks authorization or important business rules."
+          },
+          {
+            "id": "criterion_3",
+            "description": "Chooses appropriate responses and error formats.",
+            "points": 3,
+            "full_credit_condition": "Provides coherent success and error status codes with consistent response structures.",
+            "partial_credit_condition": "Uses reasonable codes but does not explain response consistency."
+          },
+          {
+            "id": "criterion_4",
+            "description": "Addresses data integrity and security.",
+            "points": 2,
+            "full_credit_condition": "Uses server-side authoritative values and recognizes relevant consistency requirements.",
+            "partial_credit_condition": "Mentions backend validation without explaining data integrity."
+          }
+        ],
+        "critical_errors": [
+          "Trusts client-supplied prices as authoritative.",
+          "Ignores authentication and authorization when the endpoint requires them."
+        ]
+      },
+      "follow_ups": []
+    },
+    {
+      "id": "BACKEND_003",
+      "competency_id": "nodejs_express",
+      "subtopic": "middleware_and_error_handling",
+      "difficulty": 7,
+      "question_type": "debugging",
+      "question": "Consider this Express code: app.get('/users/:id', (req, res, next) => { User.findById(req.params.id).then(user => { if (!user) res.status(404).json({ message: 'Not found' }); res.json(user); }).catch(next); }); Identify the problems and explain how you would fix them.",
+      "assessment_goal": "Assess the ability to trace asynchronous control flow, prevent multiple responses, and handle errors.",
+      "why_asked": "Real backend work often involves debugging subtle request-lifecycle and error-handling problems.",
+      "estimated_duration_seconds": 180,
+      "reference_answer": {
+        "summary": "The code may attempt to send two responses when no user exists. It also needs a clear strategy for invalid IDs and database errors.",
+        "detailed_explanation": "When user is null, the handler sends a 404 response but does not return. Execution continues and res.json(user) attempts to send another response, potentially causing an ERR_HTTP_HEADERS_SENT error. Return immediately after sending the 404 response or use an if/else structure. A malformed identifier may cause a database or ODM validation error, which should be translated into an appropriate client error when recognized. Unexpected database failures should reach centralized error middleware and produce a safe 500 response. Error middleware should have the Express error-handler signature (err, req, res, next). Async rejection propagation differs across Express versions and handler patterns, so verify the version and use an explicit wrapper or try/catch when needed.",
+        "key_points": [
+          "Identify the missing return after the 404 response.",
+          "Avoid sending more than one response for a request.",
+          "Handle invalid identifiers separately where appropriate.",
+          "Forward unexpected errors to centralized error middleware.",
+          "Do not expose internal error details to clients."
+        ],
+        "acceptable_alternatives": [
+          "Use if/else so only one response branch executes.",
+          "Use async/await with try/catch and next(error).",
+          "Use a reusable asynchronous error wrapper compatible with the Express version."
+        ],
+        "common_mistakes": [
+          "Claiming that res.json automatically stops JavaScript execution.",
+          "Ignoring rejected database promises.",
+          "Returning every database error as 404.",
+          "Assuming asynchronous error propagation is identical in all Express versions."
+        ]
+      },
+      "problem": {
+        "statement": "Correct the route so that it sends exactly one response, handles missing users and malformed identifiers appropriately, and forwards unexpected database errors.",
+        "input_description": "A request provides a user identifier through the URL path.",
+        "expected_output": "A 200 response with the user when found; an appropriate 4xx response for a missing user or malformed identifier; a safe server error for unexpected database failures.",
+        "constraints": [
+          "Use Express.js and a promise-based database operation.",
+          "Do not send multiple responses.",
+          "Do not reveal internal stack traces to clients."
+        ],
+        "reference_solution": "app.get('/users/:id', async (req, res, next) => {\n  try {\n    const user = await User.findById(req.params.id);\n    if (!user) {\n      return res.status(404).json({ message: 'User not found' });\n    }\n    return res.status(200).json(user);\n  } catch (err) {\n    if (isMalformedUserIdError(err)) {\n      return res.status(400).json({ message: 'Invalid user ID' });\n    }\n    return next(err);\n  }\n});\n\n// Implement isMalformedUserIdError using the actual database driver's\n// documented validation-error types. Register centralized error middleware.",
+        "edge_cases": [
+          "The user identifier is syntactically invalid.",
+          "The identifier is valid but no user exists.",
+          "The database connection fails.",
+          "The user exists and is returned successfully.",
+          "The error occurs after a response has already been sent; error middleware must avoid attempting another response."
+        ]
+      },
+      "evaluation": {
+        "total_points": 10,
+        "criteria": [
+          {
+            "id": "criterion_1",
+            "description": "Finds and fixes the double-response bug.",
+            "points": 4,
+            "full_credit_condition": "Explains the missing return or equivalent mutually exclusive control flow and provides a correct fix.",
+            "partial_credit_condition": "Recognizes the double-response risk but does not fix it reliably."
+          },
+          {
+            "id": "criterion_2",
+            "description": "Handles expected client errors.",
+            "points": 2,
+            "full_credit_condition": "Distinguishes a missing user from a malformed identifier.",
+            "partial_credit_condition": "Handles only the missing-user case."
+          },
+          {
+            "id": "criterion_3",
+            "description": "Handles unexpected asynchronous errors.",
+            "points": 3,
+            "full_credit_condition": "Correctly forwards unexpected failures to centralized error middleware with version-aware async handling.",
+            "partial_credit_condition": "Uses try/catch or catch but does not fully explain error propagation."
+          },
+          {
+            "id": "criterion_4",
+            "description": "Provides a safe response.",
+            "points": 1,
+            "full_credit_condition": "Avoids leaking internal errors and returns a coherent response.",
+            "partial_credit_condition": "Returns an error response but exposes unnecessary internal information."
+          }
+        ],
+        "critical_errors": [
+          "Leaves the unconditional second response in place.",
+          "Silently swallows unexpected database errors."
+        ]
+      },
+      "follow_ups": [
+        {
+          "id": "BACKEND_003_F1",
+          "question": "In Express, what is middleware, and how would you use middleware to authenticate requests and handle errors consistently?",
+          "competency_id": "nodejs_express",
+          "difficulty": 7,
+          "question_type": "practical_application",
+          "assessment_goal": "Evaluate understanding of middleware order, next(), authentication, and centralized error handling.",
+          "estimated_duration_seconds": 120,
+          "trigger_conditions": [
+            "The candidate fixes the route but does not explain how cross-cutting concerns should be handled."
+          ],
+          "skip_conditions": [
+            "The candidate already explains middleware ordering, next(), authentication middleware, and error middleware correctly."
+          ],
+          "reference_answer": {
+            "summary": "Middleware functions process requests and responses in sequence. Authentication middleware verifies credentials before protected route handlers, while error middleware handles forwarded failures.",
+            "detailed_explanation": "A regular middleware function receives req, res, and next. It can inspect or modify the request, end the response, or call next() to continue. Authentication middleware verifies a token or session and establishes the authenticated identity before the route handler. Error middleware receives err, req, res, and next and is registered after routes. Middleware order matters because a handler cannot use authentication data that has not yet been established.",
+            "key_points": [
+              "Explain req, res, and next.",
+              "Call next() to continue when appropriate.",
+              "Place authentication middleware before protected handlers.",
+              "Register centralized error middleware after routes.",
+              "Do not call next() after already ending a response unless deliberately passing an error."
+            ],
+            "acceptable_alternatives": [
+              "Use a framework-specific authentication library while preserving the middleware flow."
+            ],
+            "common_mistakes": [
+              "Calling next() and sending a response for the same request without a deliberate reason.",
+              "Registering authentication after the protected routes.",
+              "Using regular middleware arguments instead of the four-argument error-handler signature."
+            ]
+          },
+          "evaluation": {
+            "total_points": 10,
+            "criteria": [
+              {
+                "id": "followup_criterion_1",
+                "description": "Explains middleware execution and next().",
+                "points": 3,
+                "full_credit_condition": "Explains the request pipeline and the different ways middleware continues or ends processing.",
+                "partial_credit_condition": "Defines middleware but cannot explain control flow."
+              },
+              {
+                "id": "followup_criterion_2",
+                "description": "Applies authentication middleware correctly.",
+                "points": 3,
+                "full_credit_condition": "Places authentication before protected routes and explains credential verification.",
+                "partial_credit_condition": "Mentions authentication without describing execution order."
+              },
+              {
+                "id": "followup_criterion_3",
+                "description": "Explains centralized error handling.",
+                "points": 4,
+                "full_credit_condition": "Explains the error-handler signature, registration order, and safe error responses.",
+                "partial_credit_condition": "Mentions error middleware but omits key control-flow details."
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "BACKEND_004",
+      "competency_id": "javascript_backend",
+      "subtopic": "async_await_and_promise_errors",
+      "difficulty": 7,
+      "question_type": "debugging",
+      "question": "A route calls two independent services: getUser(userId) and getOrders(userId). The developer awaits getUser first and then getOrders. How could you reduce response time without changing the response data? What failure-handling trade-offs should you consider?",
+      "assessment_goal": "Assess asynchronous reasoning, parallel execution, and error handling.",
+      "why_asked": "Node.js backend developers regularly coordinate independent database queries and service calls.",
+      "estimated_duration_seconds": 150,
+      "reference_answer": {
+        "summary": "If both operations are independent, execute them concurrently using Promise.all. Handle rejection appropriately and consider whether partial results are acceptable.",
+        "detailed_explanation": "Sequential awaits wait for the first operation to complete before starting the second. If neither operation depends on the other's result, const [user, orders] = await Promise.all([getUser(userId), getOrders(userId)]) starts both operations without waiting for the first to finish before initiating the second. The response can then be constructed from both values. Promise.all rejects when one of its input promises rejects, but it does not automatically cancel the other operation. If partial data is useful, Promise.allSettled or explicit per-operation error handling may be appropriate. Concurrency should be bounded for large batches, and shared mutable state should be considered.",
+        "key_points": [
+          "Recognize when operations are independent.",
+          "Use Promise.all for concurrent execution.",
+          "Understand Promise.all rejection behavior.",
+          "Use Promise.allSettled when partial outcomes are needed.",
+          "Avoid unbounded concurrency for large workloads."
+        ],
+        "acceptable_alternatives": [
+          "Use explicit concurrent promise handling if it preserves the required response contract.",
+          "Keep operations sequential when the second depends on the first."
+        ],
+        "common_mistakes": [
+          "Claiming Promise.all makes synchronous CPU-heavy work run on multiple cores.",
+          "Using Promise.all when the second operation requires the first result.",
+          "Ignoring rejected promises.",
+          "Assuming Promise.all cancels all remaining operations when one rejects."
+        ]
+      },
+      "problem": null,
+      "evaluation": {
+        "total_points": 10,
+        "criteria": [
+          {
+            "id": "criterion_1",
+            "description": "Recognizes independent asynchronous operations.",
+            "points": 2,
+            "full_credit_condition": "Clearly explains that both calls can start without depending on each other's result.",
+            "partial_credit_condition": "Suggests parallel execution without explaining the dependency condition."
+          },
+          {
+            "id": "criterion_2",
+            "description": "Provides a correct concurrent implementation.",
+            "points": 3,
+            "full_credit_condition": "Correctly demonstrates Promise.all and destructures the results.",
+            "partial_credit_condition": "Identifies Promise.all but uses it incorrectly."
+          },
+          {
+            "id": "criterion_3",
+            "description": "Explains failure semantics.",
+            "points": 3,
+            "full_credit_condition": "Explains rejection behavior and a suitable strategy for all-or-nothing or partial results.",
+            "partial_credit_condition": "Mentions try/catch but misses the relevant concurrency trade-off."
+          },
+          {
+            "id": "criterion_4",
+            "description": "Identifies practical constraints.",
+            "points": 2,
+            "full_credit_condition": "Recognizes dependency, cancellation, CPU-bound work, or concurrency-limit considerations.",
+            "partial_credit_condition": "Provides a correct basic answer without practical constraints."
+          }
+        ],
+        "critical_errors": [
+          "Claims sequential awaits are always faster than concurrent execution of independent asynchronous I/O.",
+          "Claims Promise.all automatically cancels other operations when one promise rejects."
+        ]
+      },
+      "follow_ups": []
+    },
+    {
+      "id": "BACKEND_005",
+      "competency_id": "sql_database",
+      "subtopic": "joins_group_by_and_aggregation",
+      "difficulty": 7,
+      "question_type": "SQL",
+      "question": "You have Users(id, name) and Orders(id, user_id, amount, status, created_at). Write a query to return each user who has at least three completed orders, along with the number of completed orders and their total order amount. Include users with no completed orders only if they meet the stated condition.",
+      "assessment_goal": "Assess joins, filtering, aggregation, grouping, and HAVING.",
+      "why_asked": "SQL exercises are a practical way to assess relational data reasoning and the ability to translate business requirements into queries.",
+      "estimated_duration_seconds": 180,
+      "reference_answer": {
+        "summary": "Join users to completed orders, group by user, and filter aggregated results using HAVING COUNT(*) >= 3.",
+        "detailed_explanation": "The completed-order condition can be placed in the JOIN condition or WHERE clause because this query intentionally returns only users with completed orders. Group by the user identifier and name, count the matching orders, and sum their amounts. HAVING filters groups after aggregation, unlike WHERE, which filters individual rows before grouping.",
+        "key_points": [
+          "Use an appropriate JOIN between Users.id and Orders.user_id.",
+          "Filter Orders.status to completed.",
+          "Group by user identity and name.",
+          "Use COUNT(*) for matching order rows and SUM(amount) for their total amount.",
+          "Use HAVING COUNT(*) >= 3 rather than WHERE COUNT(*) >= 3."
+        ],
+        "acceptable_alternatives": [
+          "Use a subquery that aggregates completed orders and joins the result to Users.",
+          "Use COUNT(o.id) if the query uses a LEFT JOIN and must distinguish missing order rows."
+        ],
+        "common_mistakes": [
+          "Using WHERE to filter an aggregate count.",
+          "Joining on unrelated columns.",
+          "Filtering the wrong order status.",
+          "Grouping only by a non-unique user name.",
+          "Returning users with fewer than three qualifying orders."
+        ]
+      },
+      "problem": {
+        "statement": "Return users with at least three completed orders, including the count and total amount of those orders.",
+        "input_description": "Users(id, name) and Orders(id, user_id, amount, status, created_at).",
+        "expected_output": "Rows containing user_id, name, completed_order_count, and total_amount, with at least three completed orders per row.",
+        "constraints": [
+          "Use MySQL 8.0-compatible SQL.",
+          "Only completed orders contribute to the count and sum.",
+          "Assume Orders.id uniquely identifies an order."
+        ],
+        "reference_solution": "SELECT u.id AS user_id,\n       u.name,\n       COUNT(o.id) AS completed_order_count,\n       SUM(o.amount) AS total_amount\nFROM Users AS u\nJOIN Orders AS o ON o.user_id = u.id\nWHERE o.status = 'completed'\nGROUP BY u.id, u.name\nHAVING COUNT(o.id) >= 3;",
+        "edge_cases": [
+          "A user has exactly three completed orders.",
+          "A user has two completed orders and several cancelled orders.",
+          "A user has no orders.",
+          "Two users share the same name.",
+          "An order amount can be NULL; the effect of SUM should be understood if NULL is allowed by the schema."
+        ]
+      },
+      "evaluation": {
+        "total_points": 10,
+        "criteria": [
+          {
+            "id": "criterion_1",
+            "description": "Joins the correct tables and columns.",
+            "points": 2,
+            "full_credit_condition": "Joins Users.id to Orders.user_id correctly.",
+            "partial_credit_condition": "Uses the right tables but an incomplete or unclear join."
+          },
+          {
+            "id": "criterion_2",
+            "description": "Filters qualifying orders.",
+            "points": 2,
+            "full_credit_condition": "Filters completed orders before aggregation.",
+            "partial_credit_condition": "Identifies status filtering but applies it incorrectly."
+          },
+          {
+            "id": "criterion_3",
+            "description": "Aggregates and groups correctly.",
+            "points": 3,
+            "full_credit_condition": "Uses COUNT, SUM, and grouping that preserves user identity.",
+            "partial_credit_condition": "Gets either the count or total right but not both."
+          },
+          {
+            "id": "criterion_4",
+            "description": "Applies the group threshold correctly.",
+            "points": 3,
+            "full_credit_condition": "Uses HAVING COUNT(o.id) >= 3 and returns only qualifying users.",
+            "partial_credit_condition": "Attempts aggregate filtering but uses an incorrect clause or threshold."
+          }
+        ],
+        "critical_errors": [
+          "Counts cancelled orders as completed orders.",
+          "Produces a global total instead of per-user aggregates."
+        ]
+      },
+      "follow_ups": [
+        {
+          "id": "BACKEND_005_F1",
+          "question": "The Orders table now contains 50 million rows and this query is slow. How would you investigate and improve it?",
+          "competency_id": "sql_database",
+          "difficulty": 8,
+          "question_type": "practical_application",
+          "assessment_goal": "Assess query-plan reasoning, indexing, and measurement-driven optimization.",
+          "estimated_duration_seconds": 150,
+          "trigger_conditions": [
+            "The candidate writes a correct aggregate query and demonstrates basic SQL competence."
+          ],
+          "skip_conditions": [
+            "The candidate has already explained query plans, appropriate indexes, and the importance of measuring changes.",
+            "The interview is focused on basic SQL rather than database optimization."
+          ],
+          "reference_answer": {
+            "summary": "Inspect the execution plan and workload, then test appropriate indexes and query improvements using measurements.",
+            "detailed_explanation": "Use EXPLAIN and, where appropriate, EXPLAIN ANALYZE to understand the actual query plan, examined rows, and join strategy. An index involving status and user_id may help depending on selectivity, table statistics, join order, and the database optimizer. A covering index may help some workloads but increases storage and write costs. Benchmark realistic data, inspect execution time and rows examined, and check whether the index improves the actual plan. Avoid assuming an index will always help.",
+            "key_points": [
+              "Inspect the execution plan and measured performance.",
+              "Evaluate index column order and selectivity.",
+              "Consider read benefits versus storage and write overhead.",
+              "Validate the improvement on realistic data.",
+              "Check for stale statistics and unnecessary scans or sorts."
+            ],
+            "acceptable_alternatives": [
+              "Partitioning or pre-aggregated summary data may be appropriate for specific workload patterns, but should not be the first unexplained solution."
+            ],
+            "common_mistakes": [
+              "Adding indexes to every column without considering write costs.",
+              "Assuming the database always uses every available index.",
+              "Optimizing based only on query appearance rather than execution plans."
+            ]
+          },
+          "evaluation": {
+            "total_points": 10,
+            "criteria": [
+              {
+                "id": "followup_criterion_1",
+                "description": "Uses evidence to diagnose the query.",
+                "points": 3,
+                "full_credit_condition": "Explains execution-plan inspection and identifies relevant performance measurements.",
+                "partial_credit_condition": "Suggests optimization without explaining how to diagnose the bottleneck."
+              },
+              {
+                "id": "followup_criterion_2",
+                "description": "Proposes a suitable index strategy.",
+                "points": 4,
+                "full_credit_condition": "Explains plausible composite-index choices and why column order depends on the workload.",
+                "partial_credit_condition": "Suggests an index but cannot justify its columns or order."
+              },
+              {
+                "id": "followup_criterion_3",
+                "description": "Validates trade-offs and improvements.",
+                "points": 3,
+                "full_credit_condition": "Mentions benchmarking, write overhead, storage, or plan verification.",
+                "partial_credit_condition": "Assumes the proposed change will improve performance without measurement."
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "BACKEND_006",
+      "competency_id": "sql_database",
+      "subtopic": "transactions_and_concurrency",
+      "difficulty": 8,
+      "question_type": "scenario",
+      "question": "An API transfers ₹1,000 from account A to account B by subtracting ₹1,000 from A and adding ₹1,000 to B. What could go wrong if the two updates are separate operations, and how would you make the transfer reliable?",
+      "assessment_goal": "Assess transactional reasoning, atomicity, and concurrent-update safety.",
+      "why_asked": "Even a junior backend engineer should understand that related database updates must preserve important business invariants.",
+      "estimated_duration_seconds": 180,
+      "reference_answer": {
+        "summary": "Use a database transaction so both updates commit together or roll back together, validate the balance, and protect against concurrent transfers.",
+        "detailed_explanation": "If the debit succeeds but the credit fails, the money may appear to disappear. If the credit occurs first and the debit fails, money may be created. A transaction ensures the related database operations commit together or roll back. The implementation should check that the source account exists and has sufficient funds, then perform the debit and credit within the transaction. Concurrent requests must not both rely on the same stale balance. Use appropriate row locking, conditional updates, or another database-supported concurrency-control strategy. A durable transfer record and a unique idempotency key can help prevent duplicate transfers when clients retry requests.",
+        "key_points": [
+          "Explain atomicity and rollback.",
+          "Validate sufficient balance.",
+          "Use a transaction for the debit and credit.",
+          "Prevent lost updates and concurrent overdrafts.",
+          "Consider retries, duplicate requests, and transfer auditing."
+        ],
+        "acceptable_alternatives": [
+          "Use a conditional atomic debit that succeeds only when the balance is sufficient, followed by a transactional credit.",
+          "Use serializable isolation or appropriate row-level locking when supported and justified."
+        ],
+        "common_mistakes": [
+          "Performing the debit and credit without a transaction.",
+          "Checking the balance in application code without protecting against concurrent requests.",
+          "Assuming transactions automatically prevent every business-level race condition.",
+          "Retrying a transfer without deduplication."
+        ]
+      },
+      "problem": null,
+      "evaluation": {
+        "total_points": 10,
+        "criteria": [
+          {
+            "id": "criterion_1",
+            "description": "Identifies partial-update risks.",
+            "points": 2,
+            "full_credit_condition": "Explains how one update can succeed while the other fails.",
+            "partial_credit_condition": "Recognizes a failure risk without explaining the inconsistent outcome."
+          },
+          {
+            "id": "criterion_2",
+            "description": "Explains transaction semantics.",
+            "points": 3,
+            "full_credit_condition": "Correctly explains commit and rollback for both updates.",
+            "partial_credit_condition": "Mentions transactions but does not explain their purpose."
+          },
+          {
+            "id": "criterion_3",
+            "description": "Handles concurrency and balance validation.",
+            "points": 3,
+            "full_credit_condition": "Addresses sufficient balance and a concurrency-safe approach.",
+            "partial_credit_condition": "Checks the balance but ignores concurrent requests."
+          },
+          {
+            "id": "criterion_4",
+            "description": "Addresses retries and auditability.",
+            "points": 2,
+            "full_credit_condition": "Identifies duplicate-request prevention or a durable transfer record.",
+            "partial_credit_condition": "Mentions logging without addressing duplicate transfers."
+          }
+        ],
+        "critical_errors": [
+          "Claims two separate database writes are automatically atomic.",
+          "Ignores concurrent overdrafts when the scenario requires a reliable balance invariant."
+        ]
+      },
+      "follow_ups": []
+    },
+    {
+      "id": "BACKEND_007",
+      "competency_id": "mongodb",
+      "subtopic": "document_modelling_and_indexes",
+      "difficulty": 7,
+      "question_type": "comparison",
+      "question": "You are designing a MongoDB application where each user can have hundreds of orders. Would you embed all orders inside the user document or store orders in a separate collection? Explain your choice and how you would query a user's recent orders efficiently.",
+      "assessment_goal": "Assess document modelling, relationship design, document growth, and query performance.",
+      "why_asked": "MongoDB schema design requires deliberate decisions about embedding, referencing, query patterns, and index usage.",
+      "estimated_duration_seconds": 180,
+      "reference_answer": {
+        "summary": "For hundreds of independently growing orders, a separate Orders collection is generally a good choice, with userId referencing the user. Index by userId and createdAt for recent-order queries.",
+        "detailed_explanation": "Embedding is useful when related data is bounded, commonly read together, and benefits from atomic updates within a single document. An unbounded or independently growing order history can make the user document large and harder to manage. A separate Orders collection supports independent order queries, pagination, and lifecycle management. Store userId on each order and create a compound index such as { userId: 1, createdAt: -1 }. Query using the user's identifier, sort by createdAt descending, and use pagination. The best design depends on access patterns, consistency requirements, and whether orders must be retained independently of the user document.",
+        "key_points": [
+          "Compare embedding and referencing.",
+          "Consider unbounded document growth and the MongoDB document size limit.",
+          "Use a separate collection for independently queried order records.",
+          "Choose an index based on the filter and sort pattern.",
+          "Use pagination for large order histories."
+        ],
+        "acceptable_alternatives": [
+          "Embed a small bounded summary of recent orders in the user document while storing full order records separately.",
+          "Embed orders when the data is tightly coupled, bounded, and consistently accessed as one unit."
+        ],
+        "common_mistakes": [
+          "Claiming embedding is always faster.",
+          "Claiming MongoDB cannot represent relationships.",
+          "Storing an unlimited array of order documents in one user record.",
+          "Creating indexes without considering the actual query pattern."
+        ]
+      },
+      "problem": {
+        "statement": "Write a MongoDB query to retrieve the 10 most recent orders for a specific user.",
+        "input_description": "Orders documents contain _id, userId, createdAt, and other order fields. userId is stored as an ObjectId.",
+        "expected_output": "An array of at most 10 orders belonging to the requested user, ordered newest first.",
+        "constraints": [
+          "Use the MongoDB Node.js driver or equivalent MongoDB query syntax.",
+          "Assume userId and createdAt have the expected stored types."
+        ],
+        "reference_solution": "db.collection('orders')\n  .find({ userId: new ObjectId(userId) })\n  .sort({ createdAt: -1 })\n  .limit(10);",
+        "edge_cases": [
+          "The user has no orders.",
+          "The user has fewer than 10 orders.",
+          "The userId string is invalid and cannot be converted to an ObjectId.",
+          "Multiple orders have identical createdAt values; a secondary sort key can provide deterministic ordering."
+        ]
+      },
+      "evaluation": {
+        "total_points": 10,
+        "criteria": [
+          {
+            "id": "criterion_1",
+            "description": "Chooses a suitable document model.",
+            "points": 4,
+            "full_credit_condition": "Explains why a separate collection is suitable for a large, independently growing order history.",
+            "partial_credit_condition": "Chooses a separate collection but provides little reasoning."
+          },
+          {
+            "id": "criterion_2",
+            "description": "Understands embedding trade-offs.",
+            "points": 2,
+            "full_credit_condition": "Explains when embedding would be appropriate and its limitations.",
+            "partial_credit_condition": "Mentions embedding but not its trade-offs."
+          },
+          {
+            "id": "criterion_3",
+            "description": "Designs the query and index.",
+            "points": 3,
+            "full_credit_condition": "Correctly filters by userId, sorts descending by creation time, limits results, and proposes an appropriate compound index.",
+            "partial_credit_condition": "Gets the filter and sort right but misses indexing or limiting."
+          },
+          {
+            "id": "criterion_4",
+            "description": "Handles edge cases.",
+            "points": 1,
+            "full_credit_condition": "Identifies at least one meaningful edge case such as invalid IDs or deterministic sorting.",
+            "partial_credit_condition": "Provides no relevant edge-case consideration."
+          }
+        ],
+        "critical_errors": [
+          "Claims an unbounded embedded array has no document-growth concerns.",
+          "Recommends an index unrelated to the actual filter and sort without justification."
+        ]
+      },
+      "follow_ups": []
+    },
+    {
+      "id": "BACKEND_008",
+      "competency_id": "security",
+      "subtopic": "authentication_authorization_and_passwords",
+      "difficulty": 7,
+      "question_type": "scenario",
+      "question": "You are building a login API using Node.js and MongoDB. Explain how you would store passwords, verify login credentials, issue authentication credentials, and prevent a user from accessing another user's private data.",
+      "assessment_goal": "Assess practical authentication, authorization, credential storage, and API security.",
+      "why_asked": "Backend engineers must understand that securely authenticating a user is different from authorizing that user to access a particular resource.",
+      "estimated_duration_seconds": 180,
+      "reference_answer": {
+        "summary": "Store passwords using a suitable password-hashing algorithm, verify submitted passwords securely, issue a session or appropriately configured token, and enforce resource-level authorization on the server.",
+        "detailed_explanation": "Never store plaintext passwords or use a fast general-purpose hash such as plain SHA-256 for password storage. Use a password-hashing algorithm such as Argon2id, scrypt, or bcrypt with appropriate parameters and salts. At login, verify the submitted password using the library's verification function and return a generic error for invalid credentials. After successful authentication, issue a secure session cookie or a properly validated token. For cookie-based sessions, use Secure and HttpOnly and an appropriate SameSite setting, and consider CSRF protection where applicable. For every private resource, verify that the authenticated identity is permitted to access it. A user ID supplied in the URL must not be trusted as proof of ownership. Rate limiting, secure transport, secret management, and careful token expiration are also important.",
+        "key_points": [
+          "Use a dedicated password-hashing algorithm with salts.",
+          "Never store plaintext passwords.",
+          "Distinguish authentication from authorization.",
+          "Validate session or token credentials on protected requests.",
+          "Check ownership or permissions for each protected resource.",
+          "Apply rate limiting and safe error handling."
+        ],
+        "acceptable_alternatives": [
+          "Use a server-side session stored in a database or cache.",
+          "Use signed access tokens with appropriate validation and lifecycle controls.",
+          "Use a reputable authentication provider while maintaining server-side authorization checks."
+        ],
+        "common_mistakes": [
+          "Storing passwords in plaintext or reversible encryption.",
+          "Trusting a userId from the request body without verifying authorization.",
+          "Assuming JWTs are encrypted by default.",
+          "Confusing a valid login with permission to access every resource.",
+          "Hardcoding token-signing secrets in source code."
+        ]
+      },
+      "problem": null,
+      "evaluation": {
+        "total_points": 10,
+        "criteria": [
+          {
+            "id": "criterion_1",
+            "description": "Explains secure password storage and verification.",
+            "points": 3,
+            "full_credit_condition": "Names an appropriate password-hashing algorithm and explains secure verification.",
+            "partial_credit_condition": "Knows passwords should be hashed but suggests an unsuitable algorithm or omits important details."
+          },
+          {
+            "id": "criterion_2",
+            "description": "Explains authentication credentials.",
+            "points": 2,
+            "full_credit_condition": "Describes a session or token approach and appropriate validation.",
+            "partial_credit_condition": "Mentions JWT or sessions without explaining how credentials are verified."
+          },
+          {
+            "id": "criterion_3",
+            "description": "Enforces authorization.",
+            "points": 3,
+            "full_credit_condition": "Explains server-side ownership or permission checks for individual resources.",
+            "partial_credit_condition": "Mentions authentication but does not explain resource-level authorization."
+          },
+          {
+            "id": "criterion_4",
+            "description": "Identifies additional security controls.",
+            "points": 2,
+            "full_credit_condition": "Discusses relevant controls such as rate limiting, secure cookies, CSRF protection, secret management, or transport security.",
+            "partial_credit_condition": "Mentions only one control without explaining its purpose."
+          }
+        ],
+        "critical_errors": [
+          "Recommends storing plaintext passwords.",
+          "Claims that knowing or supplying another user's ID is sufficient authorization."
+        ]
+      },
+      "follow_ups": []
+    },
+    {
+      "id": "BACKEND_009",
+      "competency_id": "coding_problem_solving",
+      "subtopic": "hash_map_frequency_counting",
+      "difficulty": 6,
+      "question_type": "coding",
+      "question": "Given an array of integers, return the first value that appears more than once when scanning from left to right. If no value repeats, return -1. Explain the time and space complexity.",
+      "assessment_goal": "Assess basic algorithm selection, hash-set usage, correctness, and complexity analysis.",
+      "why_asked": "Hash-based problem solving is useful for implementing deduplication, request tracking, and data-processing logic in backend services.",
+      "estimated_duration_seconds": 150,
+      "reference_answer": {
+        "summary": "Scan the array from left to right and use a hash set to track previously seen values. The first value already in the set is the answer.",
+        "detailed_explanation": "For each element, check whether it exists in a set. If it does, return it immediately. Otherwise, insert it and continue. If the scan finishes without a duplicate, return -1. Under expected hash-set performance, the algorithm takes O(n) time and O(n) extra space. This interpretation finds the first repeated value encountered during the scan, not necessarily the value whose first occurrence appears earliest among all duplicated values.",
+        "key_points": [
+          "Uses a set of previously seen values.",
+          "Returns immediately on the first repeated encounter.",
+          "Returns -1 if the scan finishes without duplicates.",
+          "Expected time complexity is O(n).",
+          "Auxiliary space complexity is O(n)."
+        ],
+        "acceptable_alternatives": [
+          "A language-specific hash map or set is acceptable.",
+          "A quadratic solution can be correct, but it should receive less credit for efficiency when the expected solution is linear."
+        ],
+        "common_mistakes": [
+          "Sorting the array and changing the required left-to-right order.",
+          "Returning the smallest duplicated number rather than the first repeated encounter.",
+          "Returning the first element that appears only once.",
+          "Claiming constant auxiliary space for the set-based solution."
+        ]
+      },
+      "problem": {
+        "statement": "Return the first value encountered for a second time while scanning an integer array from left to right. Return -1 when no value repeats.",
+        "input_description": "An integer array nums of length n.",
+        "expected_output": "The first repeated value, or -1 if no repeated value exists.",
+        "constraints": [
+          "1 <= n <= 200000",
+          "-1000000000 <= nums[i] <= 1000000000",
+          "Prefer O(n) expected time."
+        ],
+        "reference_solution": "import java.util.HashSet;\nimport java.util.Set;\n\npublic static int firstRepeated(int[] nums) {\n    Set<Integer> seen = new HashSet<>();\n    for (int value : nums) {\n        if (!seen.add(value)) {\n            return value;\n        }\n    }\n    return -1;\n}",
+        "edge_cases": [
+          "A single-element array.",
+          "An array with no duplicates.",
+          "A duplicate at the final position.",
+          "Several different values repeat.",
+          "Negative integers and zero."
+        ]
+      },
+      "evaluation": {
+        "total_points": 10,
+        "criteria": [
+          {
+            "id": "criterion_1",
+            "description": "Implements correct left-to-right behavior.",
+            "points": 4,
+            "full_credit_condition": "Returns the first value whose occurrence is a repeat during the scan.",
+            "partial_credit_condition": "Finds a duplicate but may return the wrong duplicate."
+          },
+          {
+            "id": "criterion_2",
+            "description": "Handles edge cases.",
+            "points": 2,
+            "full_credit_condition": "Correctly handles no duplicates, single-element input, and negative values.",
+            "partial_credit_condition": "Handles common input but misses a meaningful edge case."
+          },
+          {
+            "id": "criterion_3",
+            "description": "Uses an appropriate data structure.",
+            "points": 2,
+            "full_credit_condition": "Uses a set or equivalent structure for expected constant-time membership checks.",
+            "partial_credit_condition": "Uses a correct but inefficient nested-loop approach."
+          },
+          {
+            "id": "criterion_4",
+            "description": "Explains complexity.",
+            "points": 2,
+            "full_credit_condition": "States expected O(n) time and O(n) extra space.",
+            "partial_credit_condition": "Gets either time or space complexity correct."
+          }
+        ],
+        "critical_errors": [
+          "Returns a duplicate that is not the first repeated encounter.",
+          "Returns an arbitrary value when no duplicate exists."
+        ]
+      },
+      "follow_ups": [
+        {
+          "id": "BACKEND_009_F1",
+          "question": "If the array is too large to fit in memory and arrives as a stream, how would you approach detecting repeated values?",
+          "competency_id": "coding_problem_solving",
+          "difficulty": 8,
+          "question_type": "practical_application",
+          "assessment_goal": "Assess the ability to reason about memory constraints and streaming algorithms.",
+          "estimated_duration_seconds": 120,
+          "trigger_conditions": [
+            "The candidate provides the correct set-based solution and complexity analysis."
+          ],
+          "skip_conditions": [
+            "The candidate has already discussed streaming and memory constraints.",
+            "The role does not require this level of algorithmic reasoning."
+          ],
+          "reference_answer": {
+            "summary": "Maintain a set of previously seen values if it fits in memory; otherwise, use an external store or partitioned processing and acknowledge the associated cost.",
+            "detailed_explanation": "An exact answer generally requires remembering enough information about prior values or consulting an external system. A database or key-value store can track seen values, using an atomic insert or uniqueness constraint to identify repeats. Partitioning or external sorting may also work depending on whether the first repeated encounter must be preserved. A Bloom filter can reduce memory usage but can produce false positives, so it cannot by itself guarantee an exact answer.",
+            "key_points": [
+              "Recognize the memory limit of an in-memory set.",
+              "Consider an external store with atomic deduplication.",
+              "Preserve stream order if the first repeated encounter matters.",
+              "Explain the accuracy trade-off of probabilistic structures."
+            ],
+            "acceptable_alternatives": [
+              "Use external sorting when ordering and batch processing constraints permit it.",
+              "Use partitioned processing with a design that preserves the required ordering semantics."
+            ],
+            "common_mistakes": [
+              "Claiming a Bloom filter always identifies duplicates exactly.",
+              "Ignoring concurrent writes to an external deduplication store.",
+              "Assuming an arbitrary partitioning scheme automatically preserves the first repeated encounter."
+            ]
+          },
+          "evaluation": {
+            "total_points": 10,
+            "criteria": [
+              {
+                "id": "followup_criterion_1",
+                "description": "Recognizes the memory limitation.",
+                "points": 2,
+                "full_credit_condition": "Explains why the in-memory set may not scale to the entire stream.",
+                "partial_credit_condition": "Mentions memory without connecting it to the algorithm."
+              },
+              {
+                "id": "followup_criterion_2",
+                "description": "Proposes a viable exact strategy.",
+                "points": 4,
+                "full_credit_condition": "Provides a workable external-store or partitioned approach with appropriate uniqueness or ordering semantics.",
+                "partial_credit_condition": "Suggests external storage without explaining how duplicates are detected."
+              },
+              {
+                "id": "followup_criterion_3",
+                "description": "Explains accuracy and concurrency trade-offs.",
+                "points": 4,
+                "full_credit_condition": "Addresses probabilistic false positives or atomic deduplication and ordering concerns.",
+                "partial_credit_condition": "Identifies only one relevant trade-off."
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "BACKEND_010",
+      "competency_id": "validation_errors_testing",
+      "subtopic": "unit_integration_testing_and_error_boundaries",
+      "difficulty": 7,
+      "question_type": "scenario",
+      "question": "You have implemented POST /users using Express and MongoDB. How would you test that the endpoint creates a user correctly, rejects invalid input, handles duplicate email addresses, and responds appropriately when the database fails?",
+      "assessment_goal": "Assess test design, boundary coverage, database isolation, and reliable error handling.",
+      "why_asked": "Backend engineers should verify both successful behavior and failure paths instead of relying on manual testing.",
+      "estimated_duration_seconds": 180,
+      "reference_answer": {
+        "summary": "Write tests for successful creation and each important failure path, use an isolated test database or controlled dependencies, and assert both status codes and response bodies.",
+        "detailed_explanation": "A unit test can verify validation or business logic using mocked dependencies. An integration test can exercise the Express route with a test database and verify the actual persistence behavior. Test a valid request, missing or malformed fields, invalid email formats when applicable, duplicate email handling, and unexpected database failures. Assert the response status and relevant body fields, and verify whether the database was modified as expected. Use unique test data and clean up after tests. If duplicate email addresses must be prevented under concurrent requests, enforce a unique database index rather than relying only on a preliminary application-level lookup. Do not return internal exception details to clients.",
+        "key_points": [
+          "Test successful and unsuccessful paths.",
+          "Distinguish unit tests from integration tests.",
+          "Assert status codes, response bodies, and persistence effects.",
+          "Use an isolated database or reliable dependency mocks.",
+          "Enforce uniqueness at the database level where required.",
+          "Test unexpected failures without leaking internal details."
+        ],
+        "acceptable_alternatives": [
+          "Use an in-memory MongoDB test server or a dedicated disposable database.",
+          "Use dependency injection to simulate database failures in unit tests.",
+          "Use API testing tools such as Supertest with a Node.js test framework."
+        ],
+        "common_mistakes": [
+          "Testing only the successful response.",
+          "Sharing production data with tests.",
+          "Relying only on a pre-insert email lookup to guarantee uniqueness.",
+          "Asserting that an error occurred without checking the API response contract.",
+          "Leaving test data behind so that tests become order-dependent."
+        ]
+      },
+      "problem": null,
+      "evaluation": {
+        "total_points": 10,
+        "criteria": [
+          {
+            "id": "criterion_1",
+            "description": "Covers the main behavioral cases.",
+            "points": 3,
+            "full_credit_condition": "Includes successful creation, invalid input, duplicate email, and database failure.",
+            "partial_credit_condition": "Covers success and some but not all required failure paths."
+          },
+          {
+            "id": "criterion_2",
+            "description": "Chooses suitable testing techniques.",
+            "points": 2,
+            "full_credit_condition": "Explains the distinction between unit and integration testing and when each is useful.",
+            "partial_credit_condition": "Mentions a test framework without explaining the test boundary."
+          },
+          {
+            "id": "criterion_3",
+            "description": "Defines meaningful assertions and isolation.",
+            "points": 3,
+            "full_credit_condition": "Checks status, body, persistence, and test-data isolation.",
+            "partial_credit_condition": "Checks responses but overlooks persistence or isolation."
+          },
+          {
+            "id": "criterion_4",
+            "description": "Handles uniqueness and unexpected errors safely.",
+            "points": 2,
+            "full_credit_condition": "Explains database-enforced uniqueness and safe handling of unexpected failures.",
+            "partial_credit_condition": "Mentions duplicate checks or error handling without addressing race conditions or information leakage."
+          }
+        ],
+        "critical_errors": [
+          "Uses production data for destructive tests without safeguards.",
+          "Claims an application-level pre-check alone guarantees unique email addresses under concurrent requests."
+        ]
+      },
+      "follow_ups": []
+    },
+    {
+      "id": "BACKEND_011",
+      "competency_id": "backend_scenarios",
+      "subtopic": "pagination_filtering_and_sorting",
+      "difficulty": 7,
+      "question_type": "scenario",
+      "question": "Your GET /api/products endpoint returns every product in the database. It works with 100 records but becomes slow when there are 500,000. How would you redesign the endpoint to support filtering, sorting, and pagination safely?",
+      "assessment_goal": "Assess API scalability, query construction, pagination correctness, and resource protection.",
+      "why_asked": "Backend APIs must remain usable as datasets grow and should not allow clients to trigger unbounded database work.",
+      "estimated_duration_seconds": 180,
+      "reference_answer": {
+        "summary": "Add validated pagination, allowlisted filters and sort fields, suitable database indexes, and a response structure that provides page information or a continuation cursor.",
+        "detailed_explanation": "Accept bounded parameters such as limit, page, category, and sortBy. Validate numeric values and cap the maximum page size. Allowlist supported filter and sort fields instead of interpolating arbitrary client input into a query or sort expression. Offset pagination is straightforward for small or moderate datasets, but deep offsets may be expensive and concurrent inserts can cause records to shift between pages. Cursor-based pagination using a stable indexed field or a compound ordering key can be more efficient for large datasets. Return the requested items and useful pagination metadata. Indexes should reflect common filters and sort patterns, and query performance should be measured.",
+        "key_points": [
+          "Use bounded page size and validated query parameters.",
+          "Allowlist filter and sort fields.",
+          "Choose offset or cursor pagination based on workload.",
+          "Use deterministic sorting, including a tie-breaker where needed.",
+          "Create indexes that support real query patterns.",
+          "Avoid returning all records or unbounded database results."
+        ],
+        "acceptable_alternatives": [
+          "Use limit and offset for an appropriate workload, with a maximum offset or other safeguards.",
+          "Use cursor pagination based on an indexed creation timestamp and unique identifier."
+        ],
+        "common_mistakes": [
+          "Allowing arbitrarily large limit values.",
+          "Accepting arbitrary sort expressions from the client.",
+          "Using unstable sorting that can skip or duplicate records across pages.",
+          "Assuming pagination alone guarantees a fast query without suitable indexes."
+        ]
+      },
+      "problem": null,
+      "evaluation": {
+        "total_points": 10,
+        "criteria": [
+          {
+            "id": "criterion_1",
+            "description": "Designs bounded pagination.",
+            "points": 3,
+            "full_credit_condition": "Validates page parameters and imposes a maximum page size.",
+            "partial_credit_condition": "Adds pagination but does not enforce reasonable bounds."
+          },
+          {
+            "id": "criterion_2",
+            "description": "Handles filtering and sorting safely.",
+            "points": 2,
+            "full_credit_condition": "Uses validated parameters and allowlisted sort or filter fields.",
+            "partial_credit_condition": "Supports filters but accepts unsafe or unvalidated fields."
+          },
+          {
+            "id": "criterion_3",
+            "description": "Explains pagination trade-offs.",
+            "points": 3,
+            "full_credit_condition": "Compares offset and cursor pagination and identifies stable ordering concerns.",
+            "partial_credit_condition": "Names one pagination technique without explaining its trade-offs."
+          },
+          {
+            "id": "criterion_4",
+            "description": "Addresses database performance.",
+            "points": 2,
+            "full_credit_condition": "Connects indexes to query patterns and proposes performance measurement.",
+            "partial_credit_condition": "Mentions indexes without explaining their relevance."
+          }
+        ],
+        "critical_errors": [
+          "Allows an unbounded result size.",
+          "Builds database expressions directly from untrusted client-supplied fields without validation."
+        ]
+      },
+      "follow_ups": []
+    },
+    {
+      "id": "BACKEND_012",
+      "competency_id": "backend_scenarios",
+      "subtopic": "debugging_production_api_latency",
+      "difficulty": 8,
+      "question_type": "scenario",
+      "question": "A backend API that normally responds in 150 ms suddenly takes 3–5 seconds in production. CPU usage appears normal, but requests are timing out intermittently. Walk through how you would investigate and resolve the issue.",
+      "assessment_goal": "Assess systematic debugging, observability, dependency analysis, and safe incident response.",
+      "why_asked": "A backend engineer must be able to investigate real failures methodically instead of making random code changes.",
+      "estimated_duration_seconds": 180,
+      "reference_answer": {
+        "summary": "Establish the scope and timing of the regression, inspect traces and dependency latency, identify the bottleneck, and validate a targeted fix while monitoring recovery.",
+        "detailed_explanation": "First establish when the problem began, which routes and requests are affected, and whether the issue correlates with a deployment, traffic change, or dependency incident. Compare request latency percentiles, error rates, throughput, and resource metrics with the healthy baseline. Use structured logs and distributed traces, where available, to break request time into application processing, database queries, external calls, and queue or connection-pool waits. Normal CPU does not rule out waiting on a slow database, exhausted connection pool, network timeout, lock contention, or a downstream service. Check query plans and pool metrics where relevant. Apply a targeted mitigation, such as correcting an inefficient query, restoring a dependency, or adjusting a validated timeout or pool configuration. Verify the improvement and avoid increasing timeouts blindly because that can increase resource pressure.",
+        "key_points": [
+          "Establish scope, onset, and correlation with changes.",
+          "Inspect latency percentiles, error rates, and throughput.",
+          "Use logs, metrics, and traces to isolate the slow component.",
+          "Investigate database latency, connection pools, and external dependencies.",
+          "Apply a measured mitigation and verify recovery.",
+          "Avoid untested configuration changes that hide the root cause."
+        ],
+        "acceptable_alternatives": [
+          "Roll back a recent deployment when evidence strongly implicates it and rollback is safe.",
+          "Use a feature flag or temporary load-shedding measure to reduce impact.",
+          "Use a controlled reproduction or load test to validate the suspected bottleneck."
+        ],
+        "common_mistakes": [
+          "Assuming normal CPU means the backend application cannot be responsible.",
+          "Increasing every timeout without identifying the bottleneck.",
+          "Making several unrelated changes at once and losing diagnostic evidence.",
+          "Ignoring downstream service latency and database connection exhaustion."
+        ]
+      },
+      "problem": null,
+      "evaluation": {
+        "total_points": 10,
+        "criteria": [
+          {
+            "id": "criterion_1",
+            "description": "Scopes and prioritizes the incident.",
+            "points": 2,
+            "full_credit_condition": "Identifies affected routes, onset, recent changes, and relevant baseline metrics.",
+            "partial_credit_condition": "Starts debugging but does not establish scope or a baseline."
+          },
+          {
+            "id": "criterion_2",
+            "description": "Uses observability to isolate the bottleneck.",
+            "points": 4,
+            "full_credit_condition": "Explains how traces, logs, metrics, and dependency timing distinguish application, database, and network delays.",
+            "partial_credit_condition": "Mentions monitoring tools without explaining how they isolate the cause."
+          },
+          {
+            "id": "criterion_3",
+            "description": "Proposes evidence-based mitigation.",
+            "points": 2,
+            "full_credit_condition": "Suggests a targeted, safe action based on the findings.",
+            "partial_credit_condition": "Suggests a plausible change without connecting it to evidence."
+          },
+          {
+            "id": "criterion_4",
+            "description": "Verifies recovery and considers risks.",
+            "points": 2,
+            "full_credit_condition": "Monitors latency and errors after the fix and recognizes the risks of blind timeout changes.",
+            "partial_credit_condition": "Plans a fix but does not describe verification."
+          }
+        ],
+        "critical_errors": [
+          "Recommends arbitrary production changes without checking their impact or safety.",
+          "Treats increasing timeouts as a complete solution without investigating the underlying delay."
+        ]
+      },
+      "follow_ups": []
+    }
+  ]
+}

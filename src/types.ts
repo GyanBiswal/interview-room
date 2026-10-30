@@ -8,7 +8,7 @@ export interface SetupConfig {
   experience: "fresher";
   difficulty: Difficulty;
   durationMin: number;
-  topics: string[];
+  focusAreas: string[]; // competency ids from the question bank
   mode: InterviewMode;
 }
 

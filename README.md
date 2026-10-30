@@ -50,3 +50,11 @@ Requirements: Git, Node.js 20.19+ (or 22.12+), npm.
 - Phase 5: Results and preparation memory
 - Phase 6: Realism and quality
 - Phase 7: Testing and free deployment
+## Question bank
+
+Interview questions live in `src/data/questionBanks/` as JSON. See
+[docs/question-bank-schema.md](docs/question-bank-schema.md) for the schema,
+selection rules and known limitations.
+
+    npm run validate:bank   # validate the question bank
+    npm run engine:smoke    # run the engine checks
