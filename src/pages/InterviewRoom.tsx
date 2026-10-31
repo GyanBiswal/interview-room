@@ -17,21 +17,27 @@ import { Badge } from "../components/ui/Badge";
 import { Button } from "../components/ui/Button";
 import { Card } from "../components/ui/Card";
 import { ProgressBar } from "../components/ui/ProgressBar";
-import type { RecognitionProblem } from "../hooks/useSpeechRecognition";
-import { useCountdown } from "../hooks/useCountdown";
-import { useSpeechRecognition } from "../hooks/useSpeechRecognition";
-import { useSpeechSynthesis } from "../hooks/useSpeechSynthesis";
+import { evaluateForPrompt, signalsFromEvaluation } from "../engine/evaluate";
+import { chooseFollowUp } from "../engine/followUps";
+import type { MatchBank } from "../engine/matchTypes";
+import type { QuestionBank } from "../engine/questionTypes";
 import {
   advance,
   endInterview,
+  getAskedFollowUpIds,
   getCurrentPrompt,
+  getSpareSeconds,
   recordAnswer,
 } from "../engine/session";
 import type { InterviewSession } from "../engine/session";
-import type { QuestionBank } from "../engine/questionTypes";
+import { useCountdown } from "../hooks/useCountdown";
+import type { RecognitionProblem } from "../hooks/useSpeechRecognition";
+import { useSpeechRecognition } from "../hooks/useSpeechRecognition";
+import { useSpeechSynthesis } from "../hooks/useSpeechSynthesis";
 
 interface InterviewRoomProps {
   bank: QuestionBank;
+  matchBank: MatchBank;
   initialSession: InterviewSession;
   onFinish: (session: InterviewSession) => void;
 }
@@ -61,6 +67,7 @@ const PROBLEM_TEXT: Record<RecognitionProblem, string> = {
 
 export function InterviewRoom({
   bank,
+  matchBank,
   initialSession,
   onFinish,
 }: InterviewRoomProps) {
@@ -85,9 +92,22 @@ export function InterviewRoom({
   });
 
   const prompt = getCurrentPrompt(session, bank);
-  const question = prompt?.question ?? null;
-  const questionId = question?.id ?? null;
-  const questionText = question?.question ?? "";
+  const isFollowUp = prompt?.kind === "followUp";
+  const promptId = prompt
+    ? prompt.kind === "main"
+      ? prompt.question.id
+      : prompt.followUp.id
+    : null;
+  const promptText = prompt
+    ? prompt.kind === "main"
+      ? prompt.question.question
+      : prompt.followUp.question
+    : "";
+  const competencyId = prompt
+    ? prompt.kind === "main"
+      ? prompt.question.competency_id
+      : prompt.followUp.competency_id
+    : null;
 
   // Stops speech and the microphone, waits for last words, returns the answer.
   async function captureAnswer(): Promise<string> {
@@ -101,8 +121,10 @@ export function InterviewRoom({
     busyRef.current = true;
     const text = await captureAnswer();
     const when = new Date();
+    const evaluation =
+      prompt && text ? evaluateForPrompt(matchBank, prompt, text) : undefined;
     setSession((prev) => {
-      const withAnswer = text ? recordAnswer(prev, text, when) : prev;
+      const withAnswer = text ? recordAnswer(prev, text, when, evaluation) : prev;
       return endInterview(withAnswer, when, reason);
     });
   }
@@ -113,13 +135,33 @@ export function InterviewRoom({
 
   const countdown = useCountdown(session.config.durationMin * 60, handleTimeUp);
 
+  // Scores the answer silently (nothing is shown now) and decides whether a
+  // follow-up is worth asking.
   async function submitAnswer(skip: boolean) {
-    if (busyRef.current) return;
+    if (busyRef.current || !prompt) return;
     busyRef.current = true;
     const captured = await captureAnswer();
     const text = skip ? "" : captured;
     const when = new Date();
-    setSession((prev) => advance(recordAnswer(prev, text, when), null, when));
+
+    const evaluation = evaluateForPrompt(matchBank, prompt, text);
+    let nextFollowUpId: string | null = null;
+    if (prompt.kind === "main") {
+      const decision = chooseFollowUp(
+        prompt.question,
+        signalsFromEvaluation(evaluation),
+        {
+          spareSeconds: getSpareSeconds(session, bank, when),
+          askedFollowUpIds: getAskedFollowUpIds(session, prompt.question.id),
+        },
+        matchBank.questions[prompt.question.id]?.follow_ups
+      );
+      nextFollowUpId = decision.followUp?.id ?? null;
+    }
+
+    setSession((prev) =>
+      advance(recordAnswer(prev, text, when, evaluation), nextFollowUpId, when)
+    );
     updateAnswer("");
     busyRef.current = false;
   }
@@ -136,21 +178,21 @@ export function InterviewRoom({
   }
 
   function handleRepeat() {
-    if (!question) return;
+    if (!promptText) return;
     recognition.stop();
-    speak(question.question);
+    speak(promptText);
   }
 
   // Read each new question aloud in voice mode.
   useEffect(() => {
-    if (questionId && voiceMode && ttsSupported) speak(questionText);
+    if (promptId && voiceMode && ttsSupported) speak(promptText);
     return () => cancelSpeech();
-  }, [questionId, questionText, voiceMode, ttsSupported, speak, cancelSpeech]);
+  }, [promptId, promptText, voiceMode, ttsSupported, speak, cancelSpeech]);
 
   // Text mode: put the cursor in the answer box for each question.
   useEffect(() => {
     if (!voiceMode) textareaRef.current?.focus();
-  }, [questionId, voiceMode]);
+  }, [promptId, voiceMode]);
 
   // Tell the parent when the interview is over.
   useEffect(() => {
@@ -166,13 +208,11 @@ export function InterviewRoom({
     return () => window.removeEventListener("beforeunload", handler);
   }, []);
 
-  if (session.status !== "in-progress" || !question) return null;
+  if (session.status !== "in-progress" || !prompt) return null;
 
   const total = session.plan.length;
   const index = session.currentIndex;
-  const competency = bank.competencies.find(
-    (c) => c.id === question.competency_id
-  );
+  const competency = bank.competencies.find((c) => c.id === competencyId);
   const lowTime = countdown.remaining <= 120;
   const micUsable = voiceMode && recognition.supported;
 
@@ -197,6 +237,7 @@ export function InterviewRoom({
           <div className="mb-2 flex items-center justify-between text-xs text-zinc-400">
             <span>
               Question {index + 1} of {total}
+              {isFollowUp ? " · follow-up" : ""}
             </span>
             <span
               role="timer"
@@ -232,7 +273,7 @@ export function InterviewRoom({
       </div>
 
       {/* Question */}
-      <Card key={question.id} className="fade-in">
+      <Card key={promptId} className="fade-in">
         <div className="flex items-start gap-4">
           <InterviewerAvatar state={avatarState} />
           <div className="min-w-0 flex-1">
@@ -240,13 +281,14 @@ export function InterviewRoom({
               <span className="text-xs font-medium text-zinc-400">
                 Interviewer
               </span>
+              {isFollowUp && <Badge tone="accent">Follow-up</Badge>}
               {competency && <Badge>{competency.name}</Badge>}
             </div>
             <p
               className="mt-3 whitespace-pre-wrap text-lg leading-relaxed text-white"
               aria-live="polite"
             >
-              {question.question}
+              {promptText}
             </p>
             <p className="mt-3 text-xs text-zinc-500" aria-live="polite">
               {statusText}
@@ -351,7 +393,7 @@ export function InterviewRoom({
             onClick={() => void submitAnswer(false)}
             disabled={answer.trim() === ""}
           >
-            {index + 1 === total ? "Finish answer and end" : "Finish answer"}
+            Finish answer
           </Button>
         </div>
       </Card>

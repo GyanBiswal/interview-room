@@ -1,6 +1,7 @@
 import { useCallback, useState } from "react";
 import { Header } from "./components/layout/Header";
-import { loadBank } from "./engine/loadBank";
+import { loadBank, loadMatchBank } from "./engine/loadBank";
+import type { MatchBank } from "./engine/matchTypes";
 import type { QuestionBank } from "./engine/questionTypes";
 import { selectQuestions } from "./engine/selectQuestions";
 import { createSession } from "./engine/session";
@@ -22,6 +23,7 @@ function newSessionId() {
 function App() {
   const [view, setView] = useState<View>("dashboard");
   const [bank, setBank] = useState<QuestionBank | null>(null);
+  const [matchBank, setMatchBank] = useState<MatchBank | null>(null);
   const [activeSession, setActiveSession] = useState<InterviewSession | null>(
     null
   );
@@ -42,6 +44,16 @@ function App() {
     const result = loadBank(BANK_ID);
     if (!("bank" in result)) return;
 
+    const matchResult = loadMatchBank(BANK_ID, result.bank);
+    if (!("match" in matchResult)) {
+      window.alert(
+        `The scoring rules failed validation: ${
+          matchResult.errors[0]?.message ?? "unknown error"
+        } Run npm run validate:match for details.`
+      );
+      return;
+    }
+
     const selection = selectQuestions(result.bank, {
       focusAreas: config.focusAreas,
       difficulty: config.difficulty,
@@ -57,6 +69,7 @@ function App() {
     }
 
     setBank(result.bank);
+    setMatchBank(matchResult.match);
     setActiveSession(
       createSession({
         id: newSessionId(),
@@ -91,10 +104,11 @@ function App() {
             onStart={handleStart}
           />
         )}
-        {view === "room" && bank && activeSession && (
+        {view === "room" && bank && matchBank && activeSession && (
           <InterviewRoom
             key={activeSession.id}
             bank={bank}
+            matchBank={matchBank}
             initialSession={activeSession}
             onFinish={handleFinish}
           />

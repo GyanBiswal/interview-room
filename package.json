@@ -9,7 +9,9 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "validate:bank": "tsx scripts/validate-bank.ts",
-    "engine:smoke": "tsx scripts/engine-smoke.ts"
+    "engine:smoke": "tsx scripts/engine-smoke.ts",
+    "validate:match": "tsx scripts/validate-match.ts",
+    "eval:test": "tsx scripts/eval-tests.ts"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.3.3",

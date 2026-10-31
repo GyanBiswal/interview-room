@@ -1,9 +1,9 @@
+import type { EvaluationResult } from "./evaluationTypes";
 import type { FollowUp, Question, QuestionBank } from "./questionTypes";
 import type { DifficultyMode } from "./selectQuestions";
 
 // Pure session state: no React, no timers, no storage. Every function takes
-// the current session and returns a NEW session. Persistence and refresh
-// recovery are added in later phases.
+// the current session and returns a NEW session.
 
 export interface SessionConfig {
   durationMin: number;
@@ -24,6 +24,7 @@ export interface AnswerRecord {
   text: string;
   skipped: boolean;
   submittedAt: string; // ISO timestamp
+  evaluation: EvaluationResult | null;
 }
 
 export interface InterviewSession {
@@ -84,11 +85,22 @@ export function getCurrentPrompt(
   return { kind: "main", question };
 }
 
+// Follow-ups already answered for a main question.
+export function getAskedFollowUpIds(
+  session: InterviewSession,
+  questionId: string
+): string[] {
+  return session.answers
+    .filter((a) => a.questionId === questionId && a.followUpId !== null)
+    .map((a) => a.followUpId as string);
+}
+
 // Records the answer to the current prompt. Empty text counts as skipped.
 export function recordAnswer(
   session: InterviewSession,
   text: string,
-  now: Date
+  now: Date,
+  evaluation?: EvaluationResult | null
 ): InterviewSession {
   if (session.status !== "in-progress") return session;
   const questionId = session.plan[session.currentIndex];
@@ -99,6 +111,7 @@ export function recordAnswer(
     text: text.trim(),
     skipped: text.trim() === "",
     submittedAt: now.toISOString(),
+    evaluation: evaluation ?? null,
   };
   return { ...session, answers: [...session.answers, record] };
 }

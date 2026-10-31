@@ -1,0 +1,357 @@
+{
+  "schema_version": "1.0",
+  "bank_id": "backend-fresher",
+  "questions": {
+    "BACKEND_001": {
+      "criteria": {
+        "criterion_1": { "needed": 4, "concepts": [
+          { "id": "q1_post", "label": "POST creates a resource", "patterns": ["\\bpost\\b.{0,40}\\b(creat|add|insert|new)", "\\b(creat|add|insert|new|make)\\w*\\b.{0,40}\\bpost\\b"] },
+          { "id": "q1_get", "label": "GET retrieves a resource", "patterns": ["\\bget\\b.{0,40}\\b(retriev|fetch|read|list|return|load)", "\\b(retriev|fetch|read|list)\\w*\\b.{0,40}\\bget\\b"] },
+          { "id": "q1_update", "label": "PUT or PATCH updates a resource", "patterns": ["\\b(put|patch)\\b.{0,40}\\b(updat|replac|modif|edit|chang)", "\\b(updat|replac|modif|edit)\\w*\\b.{0,40}\\b(put|patch)\\b"] },
+          { "id": "q1_delete", "label": "DELETE removes a resource", "terms": ["delete request", "delete method", "use delete"], "patterns": ["\\bdelete\\b.{0,30}\\b(remov|delet|destroy|erase)", "\\b(remov|delet|destroy|erase)\\w*\\b.{0,30}\\bdelete\\b"] }
+        ] },
+        "criterion_2": { "needed": 4, "concepts": [
+          { "id": "q1_success", "label": "Success codes (200, 201, 204)", "terms": ["201", "200", "204", "created", "no content", "two hundred one", "two hundred", "two oh one", "two oh four"] },
+          { "id": "q1_validation", "label": "400 for invalid input", "terms": ["400", "bad request", "422", "unprocessable", "four hundred", "validation error*"] },
+          { "id": "q1_not_found", "label": "404 for a missing resource", "terms": ["404", "not found", "four oh four", "four hundred four"] },
+          { "id": "q1_auth", "label": "401 and 403 for authentication and permission failures", "terms": ["401", "403", "unauthorized", "unauthenticated", "forbidden", "not authenticated", "four oh one", "four oh three", "four hundred one", "four hundred three"] },
+          { "id": "q1_server", "label": "500 for server errors", "terms": ["500", "internal server error", "server error", "five hundred", "five oh oh"] }
+        ] },
+        "criterion_3": { "concepts": [
+          { "id": "q1_put_replace", "label": "PUT replaces the whole resource", "terms": ["replace*", "entire resource", "whole resource", "full update", "full representation", "complete replacement", "complete resource", "entire object", "whole object", "overwrite*", "whole record", "entire record", "whole document", "entire document", "swaps"] },
+          { "id": "q1_patch_partial", "label": "PATCH updates only some fields", "terms": ["partial*", "selected fields", "some fields", "specific fields", "subset", "only the changed", "only changed", "a few fields", "single field", "part of the resource", "only what changed", "only the data that changed"], "patterns": ["\\bonly\\b.{0,25}\\bfields?\\b"] },
+          { "id": "q1_idempotent", "label": "Idempotency (repeating gives the same effect)", "terms": ["idempoten*", "same result", "same effect", "same outcome", "same state", "multiple times", "repeat*", "calling it again", "safe to retry", "safe to repeat", "again and again", "several times"] }
+        ] },
+        "criterion_4": { "needed": 1, "concepts": [
+          { "id": "q1_applied", "label": "Applies the methods to the user API paths", "patterns": ["\\b(get|post|put|patch|delete)\\s+users\\b", "\\busers\\s+(id|123|1)\\b"] }
+        ] }
+      },
+      "signal_concepts": [
+        { "id": "q1_sig_idem_key", "label": "Mentions an idempotency key", "terms": ["idempotency key", "idempotency token", "idempotency header", "idempotent key"] }
+      ],
+      "follow_ups": {
+        "BACKEND_001_F1": {
+          "criteria": {
+            "followup_criterion_1": { "needed": 1, "concepts": [
+              { "id": "q1f1_key", "label": "Idempotency key or unique business identifier", "terms": ["idempotency key", "idempotency token", "idempotent key", "unique key", "unique request id", "request id", "client generated id", "unique identifier", "unique business identifier", "order reference", "deduplication key", "dedup key"] }
+            ] },
+            "followup_criterion_2": { "concepts": [
+              { "id": "q1f1_unique", "label": "Database uniqueness constraint", "terms": ["unique constraint", "unique index", "uniqueness", "primary key", "unique key constraint"] },
+              { "id": "q1f1_atomic", "label": "Atomicity, transactions or concurrency safety", "terms": ["atomic*", "transaction*", "lock*", "race condition*", "concurrent*", "simultaneous*", "upsert", "insert if not exists"] }
+            ] },
+            "followup_criterion_3": { "needed": 1, "concepts": [
+              { "id": "q1f1_return_existing", "label": "A repeated request returns the existing result", "terms": ["return the same", "same response", "existing order", "previous response", "stored response", "return the existing", "return the original", "returns the original", "cached response", "saved response", "same result", "already created", "already processed", "return the stored", "returns the stored"] }
+            ] }
+          },
+          "ask_when": [ { "kind": "coverageAtLeast", "value": 0.6 }, { "kind": "conceptCovered", "conceptId": "q1_idempotent" } ],
+          "skip_when": [ { "kind": "conceptCovered", "conceptId": "q1_sig_idem_key" } ]
+        }
+      }
+    },
+    "BACKEND_002": {
+      "criteria": {
+        "criterion_1": { "needed": 2, "concepts": [
+          { "id": "q2_validate", "label": "Validates required fields and input", "terms": ["validat*", "schema", "joi", "zod", "express validator", "sanitiz*", "required field*", "missing field*"] },
+          { "id": "q2_types", "label": "Checks types and ranges (positive integer quantity)", "terms": ["positive integer", "positive number", "greater than zero", "greater than 0", "must be positive", "type check", "data type", "valid objectid", "valid id", "integer", "min 1", "at least 1", "not negative"] }
+        ] },
+        "criterion_2": { "needed": 2, "concepts": [
+          { "id": "q2_exists", "label": "Checks that the user and product exist", "terms": ["404", "not found", "does not exist", "doesnt exist", "dont exist", "exists", "existence", "check if the user", "check if the product", "check whether the user", "check whether the product", "verify the user", "verify the product", "look up the user", "look up the product", "find the user", "find the product"] },
+          { "id": "q2_authz", "label": "Checks authentication and authorization", "terms": ["authoriz*", "authenticat*", "permission*", "logged in", "jwt", "token*", "ownership", "owns"] },
+          { "id": "q2_business", "label": "Enforces business rules (stock, conflicts)", "terms": ["stock", "inventory", "out of stock", "business rule*", "409", "conflict", "availability", "insufficient"] }
+        ] },
+        "criterion_3": { "needed": 3, "concepts": [
+          { "id": "q2_201", "label": "201 Created on success", "terms": ["201", "created", "two hundred one"] },
+          { "id": "q2_error_codes", "label": "Appropriate error codes (400, 404, 409, 422)", "terms": ["400", "422", "404", "409", "unprocessable", "bad request", "not found", "conflict"] },
+          { "id": "q2_consistent", "label": "Consistent response and error format", "terms": ["consistent", "error object*", "error format", "error envelope", "error response*", "response structure*", "response body", "code and message", "message field", "problem details", "standard format", "standardized", "standardised"] }
+        ] },
+        "criterion_4": { "needed": 2, "concepts": [
+          { "id": "q2_server_price", "label": "Uses server-side prices, not client-supplied ones", "terms": ["server side price*", "price from the database", "price from database", "authoritative", "dont trust the client", "do not trust the client", "not trust the client", "never trust the client", "trust the client", "client supplied price*", "price on the server", "fetch the price", "look up the price", "lookup the price", "calculate the price", "backend price*", "price on the backend", "price from the server"] },
+          { "id": "q2_integrity", "label": "Preserves data integrity (transactions, constraints)", "terms": ["transaction*", "atomic*", "consistency", "constraint*", "foreign key", "race condition*", "concurren*"] },
+          { "id": "q2_no_leak", "label": "Does not expose stack traces or internals", "terms": ["stack trace*", "internal error*", "dont expose", "do not expose", "not expose", "dont leak", "do not leak", "not leak", "hide"] }
+        ] }
+      }
+    },
+    "BACKEND_003": {
+      "criteria": {
+        "criterion_1": { "needed": 2, "concepts": [
+          { "id": "q3_missing_return", "label": "Missing return after the 404 response (or use if/else)", "terms": ["missing return", "return after", "add return", "use return", "return statement", "return res", "return the response", "forgot to return", "doesnt return", "does not return", "no return", "not returning", "else block", "if else", "else branch", "early return", "else statement", "return immediately", "return before"] },
+          { "id": "q3_double_response", "label": "Two responses are sent for one request", "terms": ["two responses", "multiple responses", "send twice", "sends twice", "second response", "responds twice", "headers already sent", "err http headers sent", "cannot set headers", "send more than one", "sent more than once", "double response", "both responses", "another response", "execution continues", "continues to execute", "keeps executing", "still executes", "still runs", "continue executing", "send two responses", "sends two responses", "sent twice"] }
+        ] },
+        "criterion_2": { "needed": 2, "concepts": [
+          { "id": "q3_not_found", "label": "Handles the missing-user case (404)", "terms": ["404", "not found", "no user", "user is null", "null user", "missing user", "user doesnt exist", "user does not exist"] },
+          { "id": "q3_malformed_id", "label": "Handles a malformed or invalid ID (400)", "terms": ["malformed", "invalid id", "invalid objectid", "invalid identifier", "cast error", "casterror", "400", "bad request", "invalid user id", "valid objectid", "isvalid", "validate the id", "validate id"] }
+        ] },
+        "criterion_3": { "needed": 2, "concepts": [
+          { "id": "q3_forward", "label": "Forwards unexpected errors to centralized error middleware", "terms": ["next err", "next error", "pass the error to next", "forward*", "error middleware", "error handling middleware", "centralized error", "centralised error", "central error", "global error", "error handler"] },
+          { "id": "q3_try_catch", "label": "Uses try/catch or catch with async/await", "terms": ["try catch", "try and catch", "async await", "async function", "catch block", "catch the error", "catch error"] },
+          { "id": "q3_version", "label": "Aware that async error handling depends on the Express version", "terms": ["express 5", "express 4", "express version*", "versions", "the version", "version of express", "async wrapper", "wrapper", "asynchandler", "express async errors", "promise rejection*", "rejected promise*", "unhandled rejection*"] }
+        ] },
+        "criterion_4": { "needed": 1, "concepts": [
+          { "id": "q3_safe", "label": "Safe response with no leaked internals", "terms": ["stack trace*", "not expose", "not leak", "dont expose", "dont leak", "internal details", "safe error", "generic message", "generic error", "500", "internal server error", "hide", "sanitized error", "do not reveal", "dont reveal"] }
+        ] }
+      },
+      "signal_concepts": [
+        { "id": "q3_sig_auth_mw", "label": "Mentions authentication middleware", "terms": ["authenticat*", "auth middleware", "jwt", "verify the token", "check the token", "token*"] }
+      ],
+      "follow_ups": {
+        "BACKEND_003_F1": {
+          "criteria": {
+            "followup_criterion_1": { "needed": 2, "concepts": [
+              { "id": "q3f1_mw_def", "label": "Middleware runs in the request pipeline with req, res, next", "terms": ["req res next", "req res and next", "middleware function", "function receives", "receives req", "function that", "has access to", "request response cycle", "request pipeline", "pipeline", "chain", "sequence", "in order"] },
+              { "id": "q3f1_next", "label": "next() passes control on", "terms": ["call next", "calls next", "calling next", "invoke next", "invokes next", "next function", "next middleware", "pass control", "passes control"] }
+            ] },
+            "followup_criterion_2": { "needed": 2, "concepts": [
+              { "id": "q3f1_auth_before", "label": "Authentication runs before protected routes", "terms": ["before the route", "before the routes", "before protected", "before the handler", "before the controller", "before route handler*", "before handlers", "placed before", "registered before", "order matters", "order of middleware", "before reaching"] },
+              { "id": "q3f1_auth_verify", "label": "Verifies credentials (token or session)", "terms": ["verif*", "token*", "jwt", "session*", "credentials", "authenticat*", "req user", "attach*", "decode"] }
+            ] },
+            "followup_criterion_3": { "needed": 3, "concepts": [
+              { "id": "q3f1_err_sig", "label": "Error middleware has four arguments (err, req, res, next)", "terms": ["err req res next", "err req res and next", "four arguments", "4 arguments", "four parameters", "4 parameters", "error handling middleware", "error middleware", "error handler middleware"] },
+              { "id": "q3f1_err_after", "label": "Error middleware is registered after the routes", "terms": ["after routes", "after the routes", "after all routes", "registered last", "defined last", "at the end", "last middleware", "end of the stack"] },
+              { "id": "q3f1_err_safe", "label": "Safe, consistent error responses", "terms": ["stack trace*", "not expose", "not leak", "dont expose", "generic message", "safe response", "consistent error*", "error format", "status code*", "json error"] }
+            ] }
+          },
+          "ask_when": [ { "kind": "coverageAtLeast", "value": 0.4 }, { "kind": "conceptMissed", "conceptId": "q3_sig_auth_mw" } ],
+          "skip_when": [ { "kind": "conceptCovered", "conceptId": "q3_sig_auth_mw" } ]
+        }
+      }
+    },
+    "BACKEND_004": {
+      "criteria": {
+        "criterion_1": { "needed": 2, "concepts": [
+          { "id": "q4_independent", "label": "The two calls are independent", "terms": ["independent", "dont depend", "doesnt depend", "does not depend", "do not depend", "not dependent", "no dependency", "no dependencies", "unrelated", "dont rely", "doesnt rely", "does not rely", "do not rely", "not rely on", "dont need each other", "dont need the result", "does not need the result", "not need the result", "neither depends", "neither needs", "waits for the first", "waiting for the first", "wait for the first", "wait until the first"], "patterns": ["\\bneither\\b.{0,30}\\bdepend"] },
+          { "id": "q4_parallel", "label": "Run them in parallel", "terms": ["parallel*", "concurrent*", "at the same time", "simultaneous*", "start both", "starts both", "run both", "runs both", "both calls", "both at once", "both together", "in one go", "together"] }
+        ] },
+        "criterion_2": { "needed": 2, "concepts": [
+          { "id": "q4_promise_all", "label": "Uses Promise.all", "terms": ["promise all", "promise dot all", "promiseall"] },
+          { "id": "q4_results", "label": "Destructures the returned array of results", "terms": ["destructur*", "array of results", "results array", "array of values", "both results", "returns an array", "resolved values", "resolves to an array", "resolves with an array", "array destructuring", "the array it returns", "out of the array", "from the array", "values from the array"], "patterns": ["\\b(const|let|var)\\b.{0,25}\\buser\\b.{0,25}\\borders\\b.{0,35}\\bawait\\b"] }
+        ] },
+        "criterion_3": { "needed": 2, "concepts": [
+          { "id": "q4_reject", "label": "Promise.all rejects if one promise rejects", "terms": ["rejects", "reject immediately", "rejects immediately", "fails fast", "fail fast", "if one fails", "if either fails", "if one rejects", "if any fails", "if any promise rejects", "if one of them fails", "if one of them rejects", "first rejection", "first rejected", "rejects as soon", "any promise rejects", "one promise rejects", "one of the promises rejects", "whole thing fails", "fails entirely", "all or nothing"] },
+          { "id": "q4_settled", "label": "Promise.allSettled or partial results", "terms": ["allsettled", "all settled", "partial result*", "partial data", "partial success", "partial response", "partially"] },
+          { "id": "q4_handle", "label": "Handles the error (try/catch)", "terms": ["try catch", "try and catch", "catch block", "catch the error", "catch errors", "error handling", "handle the error", "handle errors", "handle rejection*", "handle failure*", "handle the failure", "handling failures", "handling errors", "in a catch"] }
+        ] },
+        "criterion_4": { "needed": 2, "concepts": [
+          { "id": "q4_no_cancel", "label": "Promise.all does not cancel the other operation", "terms": ["doesnt cancel", "does not cancel", "not cancel", "no cancellation", "cancellation", "abortcontroller", "abort controller", "still running", "keeps running", "keep running", "continue running", "continues running", "other promise continues", "other operation continues", "other operations continue", "not automatically cancel", "not stopped", "isnt stopped", "doesnt stop", "does not stop", "not aborted", "isnt aborted"] },
+          { "id": "q4_dependency", "label": "Only when the calls do not depend on each other", "terms": ["depends on", "dependent", "if the second needs", "needs the result", "requires the first", "need the result of", "needs the output", "use the result of the first", "second call needs", "when one depends", "only when independent", "only if independent"] },
+          { "id": "q4_limits", "label": "Practical limits (CPU-bound work, concurrency limits, batches)", "terms": ["cpu bound", "cpu intensive", "single thread*", "not parallel", "concurrency limit*", "limit concurrency", "limit the concurrency", "too many", "rate limit*", "connection pool", "bounded concurrency", "p limit", "batch*", "chunk*", "unbounded"] }
+        ] }
+      }
+    },
+    "BACKEND_005": {
+      "criteria": {
+        "criterion_1": { "needed": 1, "concepts": [
+          { "id": "q5_join", "label": "Joins Users to Orders on user_id", "terms": ["join users and orders", "join users with orders", "join users to orders", "join users on", "join orders on", "inner join", "join the users", "join the two tables", "join the tables", "join on user id", "joined on user id"], "patterns": ["\\bjoin\\b.{0,60}\\buser id\\b", "\\b(connect|link|match|combine|merge)\\w*\\b.{0,40}\\b(user id|orders)\\b"] }
+        ] },
+        "criterion_2": { "needed": 1, "concepts": [
+          { "id": "q5_status", "label": "Filters completed orders before aggregating", "terms": ["filter by status", "filter on status", "filter the status", "where status", "status is completed", "status equals completed"], "patterns": ["\\bstatus\\b.{0,15}\\bcompleted?\\b", "\\b(only|keep|filter\\w*|where|just)\\b.{0,40}\\bcompleted\\b"] }
+        ] },
+        "criterion_3": { "needed": 3, "concepts": [
+          { "id": "q5_count", "label": "Uses COUNT", "terms": ["count"] },
+          { "id": "q5_sum", "label": "Uses SUM for the total amount", "terms": ["sum", "add up", "adds up", "total of the amount*", "sum of", "total amount", "totals the amount*"] },
+          { "id": "q5_group", "label": "Groups by user", "terms": ["group by", "grouped by", "group the", "grouping", "group on"] }
+        ] },
+        "criterion_4": { "needed": 2, "concepts": [
+          { "id": "q5_having", "label": "Uses HAVING for the aggregate filter", "terms": ["having"] },
+          { "id": "q5_threshold", "label": "Applies the threshold of three or more", "patterns": ["\\bhaving\\b.{0,40}\\b(3|three)\\b", "\\bcount\\b.{0,15}\\b(3|three)\\b"] },
+          { "id": "q5_having_vs_where", "label": "Explains HAVING filters groups, WHERE filters rows", "terms": ["having filters", "filters groups", "after aggregation", "after grouping", "after the grouping", "after the aggregation", "where cant", "where cannot", "cant use where", "can not use where", "where filters rows", "where filters individual rows", "where runs before", "before grouping", "before the grouping", "aggregate filter*", "filter aggregates", "filter on aggregates", "filter the aggregated"] }
+        ] }
+      },
+      "signal_concepts": [
+        { "id": "q5_sig_plan", "label": "Already discusses query plans or indexes", "terms": ["explain", "execution plan", "query plan", "index*", "indices", "slow query", "performance"] }
+      ],
+      "follow_ups": {
+        "BACKEND_005_F1": {
+          "criteria": {
+            "followup_criterion_1": { "needed": 2, "concepts": [
+              { "id": "q5f1_plan", "label": "Inspects the execution plan", "terms": ["explain", "explain analyze", "execution plan", "query plan", "query planner", "analyze the query", "profil*", "slow query log", "rows examined", "full table scan", "table scan", "seq scan"] },
+              { "id": "q5f1_measure", "label": "Measures performance", "terms": ["measure*", "benchmark*", "baseline", "timing", "execution time", "before and after", "metrics", "monitor*"] }
+            ] },
+            "followup_criterion_2": { "needed": 2, "concepts": [
+              { "id": "q5f1_composite", "label": "Composite index on status and user_id", "terms": ["composite index", "compound index", "multi column index", "multiple columns", "index on status", "index on user id", "status and user id", "status user id", "user id and status"] },
+              { "id": "q5f1_order", "label": "Column order and selectivity", "terms": ["column order", "order of columns", "order of the columns", "selectivity", "cardinality", "leftmost", "left most", "equality first", "which column first", "status first", "user id first"] },
+              { "id": "q5f1_covering", "label": "Covering index", "terms": ["covering index", "index only scan", "covers the query", "include amount", "amount in the index"] }
+            ] },
+            "followup_criterion_3": { "needed": 2, "concepts": [
+              { "id": "q5f1_write_cost", "label": "Write overhead and storage cost of indexes", "terms": ["write overhead", "slower writes", "slows down writes", "insert performance", "storage", "disk space", "extra space", "maintenance cost", "index maintenance", "more indexes", "write cost*"] },
+              { "id": "q5f1_verify", "label": "Verifies the improvement on realistic data", "terms": ["benchmark*", "verif*", "validat*", "re run explain", "rerun explain", "compare the plan", "check the plan again", "realistic data", "production like data", "before and after", "measure*"] }
+            ] }
+          },
+          "ask_when": [ { "kind": "coverageAtLeast", "value": 0.6 }, { "kind": "conceptCovered", "conceptId": "q5_having" } ],
+          "skip_when": [ { "kind": "conceptCovered", "conceptId": "q5_sig_plan" } ]
+        }
+      }
+    },
+    "BACKEND_006": {
+      "criteria": {
+        "criterion_1": { "needed": 1, "concepts": [
+          { "id": "q6_partial_fail", "label": "One update can succeed while the other fails", "terms": ["one succeeds", "one update succeeds", "debit succeeds", "debit succeed", "debit goes through", "credit fails", "credit fail", "credit update fails", "second update fails", "crash*", "fails halfway", "half way", "halfway", "partial*", "money disappear*", "money is lost", "money lost", "money vanish*", "inconsistent", "money created", "only one of", "appear to disappear"] }
+        ] },
+        "criterion_2": { "needed": 2, "concepts": [
+          { "id": "q6_transaction", "label": "Uses a database transaction", "terms": ["transaction*"] },
+          { "id": "q6_commit_rollback", "label": "Commit and rollback", "terms": ["commit*", "rollback", "roll back", "rolled back", "abort*"] },
+          { "id": "q6_atomic", "label": "Atomicity (all or nothing)", "terms": ["atomic*", "all or nothing"] }
+        ] },
+        "criterion_3": { "needed": 2, "concepts": [
+          { "id": "q6_balance", "label": "Validates sufficient balance", "terms": ["sufficient balance", "sufficient funds", "enough balance", "enough funds", "balance check", "check the balance", "check balance", "overdraft*", "negative balance", "balance is enough", "balance is sufficient", "has enough money", "enough money"] },
+          { "id": "q6_concurrency", "label": "Handles concurrent transfers (locking, isolation, conditional update)", "terms": ["lock*", "for update", "row level", "isolation", "serializable", "concurren*", "race condition*", "simultaneous*", "optimistic", "pessimistic", "version number", "conditional update", "atomic update"] }
+        ] },
+        "criterion_4": { "needed": 1, "concepts": [
+          { "id": "q6_retries_audit", "label": "Duplicate-request prevention or a durable transfer record", "terms": ["idempoten*", "duplicate*", "deduplicat*", "transfer id", "request id", "unique key", "audit*", "transfer record*", "transaction record*", "ledger", "log the transfer", "transfer log", "history table", "transfers table", "record the transfer"] }
+        ] }
+      }
+    },
+    "BACKEND_007": {
+      "criteria": {
+        "criterion_1": { "needed": 2, "concepts": [
+          { "id": "q7_separate", "label": "Separate Orders collection referencing the user", "terms": ["separate collection", "orders collection", "own collection", "different collection", "reference*", "store orders separately", "orders in a separate", "userid in each order", "user id in each order", "user id on each order", "userid on each order", "separate orders"] },
+          { "id": "q7_growth", "label": "Unbounded growth and the document size limit", "terms": ["unbounded", "grow*", "document size", "16 mb", "16mb", "16 megabyte*", "size limit", "large array*", "array grows", "bloat*", "too big", "too large", "keeps growing"] },
+          { "id": "q7_independent", "label": "Orders are queried and paginated independently", "terms": ["independently", "independent", "pagination", "paginat*", "separate lifecycle", "on their own"] }
+        ] },
+        "criterion_2": { "needed": 2, "concepts": [
+          { "id": "q7_embed_when", "label": "Embedding suits bounded data read together", "terms": ["embed*", "nested", "subdocument*", "sub document*", "bounded", "small number", "few orders", "read together", "accessed together", "single read", "single document", "atomic*"] },
+          { "id": "q7_embed_limits", "label": "Limits of embedding (size, duplication, growth)", "terms": ["16 mb", "16mb", "document size", "size limit", "large documents", "unbounded", "duplicat*", "update anomal*", "harder to update", "grows too large", "limitation*", "downside*", "drawback*", "trade off*", "tradeoff*"] }
+        ] },
+        "criterion_3": { "needed": 3, "concepts": [
+          { "id": "q7_filter_user", "label": "Filters orders by userId", "terms": ["filter by user", "filter by userid", "where userid", "match userid", "find orders for the user", "query by user id", "filter by user id"], "patterns": ["\\b(query|filter|match|find)\\w*\\b.{0,40}\\b(user id|userid|the user)", "\\bfind\\b.{0,50}\\buserid\\b"] },
+          { "id": "q7_sort_limit", "label": "Sorts newest first and limits the results", "terms": ["newest first", "most recent first", "descending", "latest first", "sort descending"], "patterns": ["\\bsort\\b.{0,40}\\bcreatedat\\b", "\\blimit\\b.{0,10}\\b10\\b"] },
+          { "id": "q7_compound_index", "label": "Compound index on userId and createdAt", "terms": ["compound index", "composite index", "index on userid", "userid 1 createdat 1", "userid createdat", "createindex", "ensureindex", "index on user id", "userid and createdat", "user id and created at", "create an index", "index on both"] }
+        ] },
+        "criterion_4": { "needed": 1, "concepts": [
+          { "id": "q7_edge", "label": "Considers an edge case (invalid ID, ties, no orders)", "terms": ["invalid objectid", "invalid id", "objectid conversion", "tie breaker", "tiebreaker", "secondary sort", "identical createdat", "same createdat", "no orders", "fewer than 10", "less than 10", "deterministic"] }
+        ] }
+      }
+    },
+    "BACKEND_008": {
+      "criteria": {
+        "criterion_1": { "needed": 2, "concepts": [
+          { "id": "q8_algo", "label": "Uses bcrypt, Argon2, scrypt or PBKDF2", "terms": ["bcrypt", "argon2", "argon2id", "scrypt", "pbkdf2"] },
+          { "id": "q8_hash_salt", "label": "Hashes with a salt", "terms": ["hash*", "salt*"] },
+          { "id": "q8_verify", "label": "Verifies by comparing against the stored hash", "terms": ["bcrypt compare", "compare the hash", "compare the password", "compare hash", "verify the password", "verify password", "verify the hash", "check the password", "match the hash", "matches the hash", "compare function", "verification function", "compare with the stored", "compare it with the stored", "password match*", "compare against the stored"], "patterns": ["\\bcompare\\w*\\b.{0,40}\\b(stored|hash|saved)\\b"] }
+        ] },
+        "criterion_2": { "needed": 2, "concepts": [
+          { "id": "q8_token_session", "label": "Issues a session or token", "terms": ["jwt", "json web token", "session*", "cookie*", "access token", "refresh token", "bearer", "token*"] },
+          { "id": "q8_validate", "label": "Validates the credential on every request", "terms": ["verify the token", "verify token", "validate the token", "validate token", "verify the jwt", "verify jwt", "jwt verify", "verifies the token", "verifies the jwt", "check the token", "decode the token", "signature", "signed", "secret", "expir*", "session store", "session id", "middleware", "every request", "each request"] }
+        ] },
+        "criterion_3": { "needed": 2, "concepts": [
+          { "id": "q8_authz", "label": "Distinguishes authorization from authentication", "terms": ["authoriz*", "permission*", "roles", "role based", "rbac", "access control", "ownership", "owns", "belongs to", "own data", "own resource*", "their own", "only access"] },
+          { "id": "q8_owner_check", "label": "Checks resource ownership using the authenticated identity", "terms": ["check that the user owns", "check ownership", "ownership check", "check the owner", "resource belongs", "belongs to the user", "belongs to the logged in user", "only access their own", "not trust the user id", "dont trust the user id", "do not trust the user id", "user id from the token", "userid from the token", "id from the token", "from the jwt", "from the session", "filter by the authenticated user", "authenticated user", "logged in user"], "patterns": ["\\b(req user|userid|user id|token|jwt|session)\\b.{0,60}\\b(match|equal|same|compare|belong|owner|own)"] }
+        ] },
+        "criterion_4": { "needed": 2, "concepts": [
+          { "id": "q8_rate", "label": "Rate limiting or brute-force protection", "terms": ["rate limit*", "brute force", "throttl*", "account lockout", "lockout", "captcha", "limit login attempts", "login attempts", "failed attempts", "too many attempts"] },
+          { "id": "q8_transport", "label": "HTTPS, secure cookies or CSRF protection", "terms": ["https", "tls", "ssl", "secure transport", "secure cookie*", "httponly", "http only", "samesite", "same site", "csrf", "xsrf", "helmet", "cors"] },
+          { "id": "q8_secrets", "label": "Keeps secrets out of source code", "terms": ["secret*", "environment variable*", "env variable*", "env file", "dotenv", "hardcod*", "hard code*", "key management", "secrets manager"] },
+          { "id": "q8_generic_error", "label": "Generic login errors (no user enumeration)", "terms": ["generic error", "generic message", "same error", "invalid credentials", "dont reveal", "do not reveal", "not reveal whether", "user enumeration", "enumerat*"] }
+        ] }
+      }
+    },
+    "BACKEND_009": {
+      "criteria": {
+        "criterion_1": { "needed": 3, "concepts": [
+          { "id": "q9_scan", "label": "Scans left to right and returns the first repeat", "terms": ["left to right", "from the start", "iterat*", "loop through", "loop over", "for each", "for loop", "traverse*", "scan*", "go through", "one pass", "single pass", "single loop", "first repeated", "first repeat", "first duplicate", "return immediately", "return the first", "return as soon", "immediately return", "early return"] },
+          { "id": "q9_seen_check", "label": "Checks whether the value was already seen", "terms": ["if seen", "already seen", "previously seen", "already in the set", "already exists", "already present", "is in the set", "seen contains", "seen has", "seen add", "not seen add", "add returns false", "check whether", "check if", "if it exists", "in seen", "contains"] },
+          { "id": "q9_return_neg", "label": "Returns -1 when nothing repeats", "terms": ["return 1", "returns 1", "return minus 1", "return minus one", "return negative one", "returns negative one", "minus one", "negative one", "otherwise return", "if no duplicate", "if there is no duplicate", "after the loop"] }
+        ] },
+        "criterion_2": { "needed": 2, "concepts": [
+          { "id": "q9_no_dup", "label": "Handles the no-duplicate case", "terms": ["no duplicates", "no duplicate", "without duplicates", "no repeat*", "none repeat", "empty array", "empty input"] },
+          { "id": "q9_edge", "label": "Considers other edge cases (single element, negatives, last position)", "terms": ["single element", "one element", "negative number*", "negative value*", "zero", "edge case*", "duplicate at the end", "last element", "several duplicates", "multiple duplicates"] }
+        ] },
+        "criterion_3": { "needed": 1, "concepts": [
+          { "id": "q9_hashset", "label": "Uses a set or hash map for membership checks", "terms": ["hashset", "hash set", "hash map", "hashmap", "hash table", "unordered set", "unordered map", "a set", "use a set", "using a set", "set data structure", "seen set", "new set", "dictionary", "dict"] }
+        ] },
+        "criterion_4": { "needed": 2, "concepts": [
+          { "id": "q9_time", "label": "Time complexity O(n)", "patterns": ["\\btime\\b.{0,25}\\b(o n|o of n|linear)\\b", "\\b(o n|linear)\\b.{0,15}\\btime\\b"] },
+          { "id": "q9_space", "label": "Space complexity O(n)", "terms": ["extra memory"], "patterns": ["\\bspace\\b.{0,25}\\b(o n|o of n|linear)\\b", "\\b(o n|linear)\\b.{0,15}\\bspace\\b"] }
+        ] }
+      },
+      "signal_concepts": [
+        { "id": "q9_sig_streaming", "label": "Already discusses streaming or memory limits", "terms": ["stream*", "too large", "doesnt fit in memory", "does not fit in memory", "external", "bloom filter", "memory limit*", "out of memory", "external sort*"] }
+      ],
+      "follow_ups": {
+        "BACKEND_009_F1": {
+          "criteria": {
+            "followup_criterion_1": { "needed": 1, "concepts": [
+              { "id": "q9f1_memory", "label": "Recognizes the memory limit of an in-memory set", "terms": ["memory", "doesnt fit", "does not fit", "too large", "too big", "out of memory", "ram", "cant hold", "cannot hold", "limited memory", "memory limit*", "memory constraint*"] }
+            ] },
+            "followup_criterion_2": { "needed": 2, "concepts": [
+              { "id": "q9f1_external", "label": "Uses an external store", "terms": ["database", "redis", "key value store", "key value", "external store", "external storage", "disk", "rocksdb", "cache", "persist*"] },
+              { "id": "q9f1_atomic", "label": "Atomic deduplication (unique constraint, insert if absent)", "terms": ["unique constraint", "unique index", "atomic", "insert if not exists", "setnx", "set nx", "upsert", "on conflict", "primary key"] },
+              { "id": "q9f1_partition", "label": "Partitioning or external sorting", "terms": ["partition*", "shard*", "external sort*", "external merge", "hash partition", "bucket*", "chunk*", "batch*", "sort the chunks", "merge"] }
+            ] },
+            "followup_criterion_3": { "needed": 2, "concepts": [
+              { "id": "q9f1_bloom", "label": "Probabilistic structures and false positives", "terms": ["bloom filter", "bloom", "probabilistic", "false positive*", "approximate", "hyperloglog", "cuckoo"] },
+              { "id": "q9f1_order", "label": "Ordering and concurrency concerns", "terms": ["concurren*", "race condition*", "order*", "preserve order", "maintain order", "sequence number*", "atomic*", "ordering"] }
+            ] }
+          },
+          "ask_when": [ { "kind": "coverageAtLeast", "value": 0.6 }, { "kind": "conceptCovered", "conceptId": "q9_hashset" } ],
+          "skip_when": [ { "kind": "conceptCovered", "conceptId": "q9_sig_streaming" } ]
+        }
+      }
+    },
+    "BACKEND_010": {
+      "criteria": {
+        "criterion_1": { "needed": 4, "concepts": [
+          { "id": "q10_success", "label": "Tests successful creation", "terms": ["successful creation", "success case", "valid request", "valid input", "valid data", "happy path", "201", "creates a user", "create a user", "creates the user"] },
+          { "id": "q10_invalid", "label": "Tests invalid input", "terms": ["invalid input", "invalid email", "missing field*", "missing required", "validation error*", "400", "bad request", "malformed", "empty body", "missing email", "missing name", "invalid data"] },
+          { "id": "q10_duplicate", "label": "Tests duplicate email handling", "terms": ["duplicate*", "already exists", "already registered", "409", "conflict", "unique email", "same email", "existing email", "email already"] },
+          { "id": "q10_db_failure", "label": "Tests database failure", "terms": ["database fail*", "db fail*", "database down", "database error*", "db error*", "db connection", "connection fail*", "mock the database", "simulate*", "database is unavailable", "database unavailable", "500", "internal server error", "force a failure", "mongoose error*"] }
+        ] },
+        "criterion_2": { "needed": 2, "concepts": [
+          { "id": "q10_unit", "label": "Unit tests with mocks or stubs", "terms": ["unit test*", "unit testing", "mock*", "stub*", "in isolation", "isolated"] },
+          { "id": "q10_integration", "label": "Integration tests against the route and a test database", "terms": ["integration test*", "integration testing", "supertest", "end to end", "e2e", "real database", "test database", "in memory", "memory server"] }
+        ] },
+        "criterion_3": { "needed": 3, "concepts": [
+          { "id": "q10_assert", "label": "Asserts status code and response body", "terms": ["assert*", "expect*", "status code*", "response body", "check the response", "verify the response", "check the status", "response status", "toequal", "tobe"] },
+          { "id": "q10_persist", "label": "Verifies what was saved in the database", "terms": ["persist*", "saved in the database", "stored in the database", "check the database", "query the database", "verify the database", "document was created", "record was created", "user count", "database contains", "db contains", "nothing is saved", "nothing saved", "database was modified"] },
+          { "id": "q10_isolate", "label": "Cleans up and isolates test data", "terms": ["clean up", "cleanup", "teardown", "tear down", "beforeeach", "before each", "aftereach", "after each", "dropdatabase", "drop the database", "reset the database", "separate database", "unique test data", "isolated database", "in memory", "memory server", "disposable"] }
+        ] },
+        "criterion_4": { "needed": 2, "concepts": [
+          { "id": "q10_unique_index", "label": "Database-enforced uniqueness (unique index)", "terms": ["unique index", "unique database index", "unique constraint", "unique true", "database level", "db level", "enforced by the database", "11000", "e11000", "duplicate key", "index on email", "unique email index", "race condition*", "concurrent*"] },
+          { "id": "q10_safe", "label": "Safe error responses (no internal details)", "terms": ["stack trace*", "dont leak", "do not leak", "not leak", "dont expose", "do not expose", "not expose", "generic error", "internal details", "internal exception*", "hide", "safe error", "sanitiz*", "without exposing"] }
+        ] }
+      }
+    },
+    "BACKEND_011": {
+      "criteria": {
+        "criterion_1": { "needed": 3, "concepts": [
+          { "id": "q11_paginate", "label": "Adds pagination (limit, offset, page or cursor)", "terms": ["paginat*", "page size", "limit", "offset", "page number", "per page", "pagesize", "skip and limit", "cursor"] },
+          { "id": "q11_cap", "label": "Caps the maximum page size", "terms": ["maximum", "max limit", "max page size", "cap the", "capped", "upper bound", "upper limit", "bound the", "bounded", "cap on", "no more than", "at most", "default limit", "max 100", "maximum of"] },
+          { "id": "q11_validate_params", "label": "Validates query parameters", "terms": ["validat*", "sanitiz*", "parse", "positive", "negative", "reject", "invalid page", "numeric", "type check"] }
+        ] },
+        "criterion_2": { "needed": 2, "concepts": [
+          { "id": "q11_allowlist", "label": "Allowlists filter and sort fields", "terms": ["allowlist*", "whitelist*", "allow list", "white list", "allowed fields", "allowed sort", "only allow*", "predefined fields", "fixed set", "approved fields", "supported fields", "supported sort"] },
+          { "id": "q11_untrusted", "label": "Treats client input as untrusted", "terms": ["validat*", "sanitiz*", "untrusted", "dont trust", "do not trust", "injection", "user input", "client input", "parameterized", "parameterised"] }
+        ] },
+        "criterion_3": { "needed": 3, "concepts": [
+          { "id": "q11_offset", "label": "Offset (page-based) pagination", "terms": ["offset*", "skip", "page number", "page based", "limit offset"] },
+          { "id": "q11_cursor", "label": "Cursor (keyset) pagination", "terms": ["cursor*", "keyset", "seek method", "after id", "last id", "last seen", "next cursor", "continuation"] },
+          { "id": "q11_offset_cost", "label": "Offset gets slow or unstable on large data", "terms": ["deep offset*", "slow for large offset*", "large offset*", "offset gets slow", "skip is slow", "shifting", "shift", "duplicates across pages", "miss records", "skip records", "concurrent insert*", "records shift"] },
+          { "id": "q11_stable", "label": "Stable, deterministic ordering with a tie-breaker", "terms": ["stable", "deterministic", "tie breaker", "tiebreaker", "unique id", "secondary sort", "consistent order", "consistent ordering", "sort by id"] }
+        ] },
+        "criterion_4": { "needed": 2, "concepts": [
+          { "id": "q11_index", "label": "Indexes that match the query pattern", "terms": ["index*", "indices", "compound index", "composite index", "covering"] },
+          { "id": "q11_measure", "label": "Measures performance", "terms": ["measure*", "explain", "execution plan", "query plan", "profil*", "benchmark*", "monitor*", "load test*"] }
+        ] }
+      }
+    },
+    "BACKEND_012": {
+      "criteria": {
+        "criterion_1": { "needed": 2, "concepts": [
+          { "id": "q12_scope", "label": "Scopes the incident: onset, affected routes, recent changes", "terms": ["when it started", "when did it start", "when the problem began", "since when", "onset", "timeline", "deploy*", "recent change*", "recent release*", "what changed", "correlat*", "which endpoints", "which routes", "which endpoint", "affected endpoint*", "affected route*", "specific endpoint*", "scope"] },
+          { "id": "q12_baseline", "label": "Compares with a healthy baseline (percentiles, dashboards)", "terms": ["baseline", "healthy", "before the incident", "historical", "compare*", "percentile*", "p95", "p99", "latency graph*", "dashboard*", "metrics"] }
+        ] },
+        "criterion_2": { "needed": 3, "concepts": [
+          { "id": "q12_logs_metrics", "label": "Uses logs and metrics", "terms": ["logs", "logging", "structured log*", "metric*", "monitor*", "dashboard*", "grafana", "prometheus", "datadog", "new relic", "cloudwatch", "apm"] },
+          { "id": "q12_tracing", "label": "Uses tracing to break down request time", "terms": ["trace*", "tracing", "jaeger", "opentelemetry", "open telemetry", "zipkin", "span*", "breakdown of time", "break down the request", "where the time is spent", "time spent"] },
+          { "id": "q12_dependencies", "label": "Checks the database, connection pool and external dependencies", "terms": ["database", "db query", "slow quer*", "query plan", "explain", "connection pool*", "pool exhaust*", "downstream", "external service*", "third party", "external api*", "network", "dns", "lock*", "timeout*"] }
+        ] },
+        "criterion_3": { "needed": 1, "concepts": [
+          { "id": "q12_mitigation", "label": "Targeted, evidence-based mitigation", "terms": ["rollback", "roll back", "revert*", "fix the query", "inefficient query", "add an index", "add index", "optimi*", "increase the pool", "pool size", "scale*", "circuit breaker", "cache*", "backoff", "load shed*", "feature flag", "root cause", "restor*", "targeted mitigation", "mitigation*"] }
+        ] },
+        "criterion_4": { "needed": 2, "concepts": [
+          { "id": "q12_verify", "label": "Verifies recovery after the fix", "terms": ["verif*", "confirm*", "after the fix", "latency returns", "latency drops", "back to normal", "recovered", "recovery", "validate the fix", "alert*", "post mortem", "postmortem", "regression test*"] },
+          { "id": "q12_blind_timeout", "label": "Avoids blindly increasing timeouts", "terms": ["blindly", "increasing timeouts", "increase the timeout*", "masks", "mask*", "hide the root cause", "treat the symptom", "symptom*"] }
+        ] }
+      }
+    }
+  }
+}
